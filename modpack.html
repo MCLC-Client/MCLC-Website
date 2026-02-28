@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCLC - Modpack Editor</title>
+  <link rel="icon" type="image/png" href="resources/icon.png">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <link rel="stylesheet" href="style.css?v=2">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#1bd96a",
+            "primary-dark": "#14a34f",
+            surface: "#121212",
+            background: "#080808",
+            "accent-dark": "#0f0f0f",
+          },
+          fontFamily: {
+            sans: ["Outfit", "Poppins", "sans-serif"],
+          },
+          boxShadow: {
+            "primary-glow": "0 0 30px rgba(27, 217, 106, 0.25)",
+          },
+        },
+      },
+    };
+  </script>
+</head>
+
+<body
+  class="bg-background text-gray-200 selection:bg-primary/30 antialiased overflow-x-hidden flex flex-col min-h-screen">
+  <div id="downloadModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="toggleModal()"></div>
+    <div
+      class="relative bg-surface border border-white/10 w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl transform transition-all">
+      <h3 class="text-3xl font-black text-white mb-2 uppercase tracking-tight">Choose Platform</h3>
+      <p class="text-gray-400 mb-8">Select your operating system to start downloading MCLC.</p>
+
+      <div class="space-y-4">
+        <a id="modalWin" href="#"
+          class="flex items-center justify-between bg-white/5 hover:bg-primary hover:text-black p-5 rounded-2xl transition-all group">
+          <span class="font-bold text-lg">Windows (.exe)</span>
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M0 3.449L9.75 2.1V11.7H0V3.449zm0 9.151h9.75v9.6L0 20.551V12.6zm10.55 0h13.45v10.8L10.55 21.3v-8.7zm0-10.5L24 0v11.7H10.55V2.1z" />
+          </svg>
+        </a>
+        <a id="modalDeb" href="#"
+          class="flex items-center justify-between bg-white/5 hover:bg-primary hover:text-black p-5 rounded-2xl transition-all">
+          <span class="font-bold text-lg">Linux (.deb)</span>
+          <span class="text-xs uppercase font-black opacity-50 tracking-widest">Debian / Ubuntu</span>
+        </a>
+        <a id="modalRpm" href="#"
+          class="flex items-center justify-between bg-white/5 hover:bg-primary hover:text-black p-5 rounded-2xl transition-all">
+          <span class="font-bold text-lg">Linux (.rpm)</span>
+          <span class="text-xs uppercase font-black opacity-50 tracking-widest">Fedora / RedHat</span>
+        </a>
+      </div>
+
+      <div class="mt-8 pt-8 border-t border-white/5 space-y-6">
+        <div>
+          <h4 class="text-sm font-black text-white mb-4 uppercase tracking-[0.2em]">Quick Install (CLI)</h4>
+          <div class="space-y-4">
+            <div class="bg-black/40 border border-white/5 rounded-2xl p-4 group/cmd transition-all hover:bg-black/60">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Linux & macOS</span>
+                <button onclick="copyToClipboard('curl -sSL https://mclc.pluginhub.de/install.sh | bash', this)"
+                  class="text-gray-500 hover:text-primary transition-colors p-1" title="Copy Linux Install Command">
+                  <i class="fas fa-copy text-xs"></i>
+                </button>
+              </div>
+              <code
+                class="text-primary text-xs font-mono break-all leading-relaxed">curl -sSL https://mclc.pluginhub.de/install.sh | bash</code>
+            </div>
+
+            <div class="bg-black/40 border border-white/5 rounded-2xl p-4 group/cmd transition-all hover:bg-black/60">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Windows (PowerShell)</span>
+                <button onclick="copyToClipboard('iwr https://mclc.pluginhub.de/install.ps1 | iex', this)"
+                  class="text-gray-500 hover:text-primary transition-colors p-1" title="Copy Windows Install Command">
+                  <i class="fas fa-copy text-xs"></i>
+                </button>
+              </div>
+              <code
+                class="text-primary text-xs font-mono break-all leading-relaxed">iwr https://mclc.pluginhub.de/install.ps1 | iex</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="toggleModal()"
+        class="mt-8 text-gray-500 hover:text-white transition-colors w-full text-sm font-bold uppercase tracking-widest">Close</button>
+    </div>
+  </div>
+
+  <div id="importModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="toggleImportModal()"></div>
+    <div
+      class="relative bg-surface border border-white/10 w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl transform transition-all">
+      <h3 class="text-3xl font-black text-white mb-2 uppercase tracking-tight">Import Modpack</h3>
+      <p class="text-gray-400 mb-8">Enter a modpack code to load it into the editor.</p>
+
+      <div class="space-y-6">
+        <input type="text" id="importCodeInput" placeholder="Enter 8-character code"
+          class="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-6 text-white text-center font-bold text-2xl tracking-[0.2em] placeholder-gray-600 focus:outline-none focus:border-primary focus:bg-white/10 transition-all uppercase">
+
+        <div class="grid grid-cols-2 gap-4">
+          <button onclick="importModpack()" id="importSubmitBtn"
+            class="bg-primary hover:bg-primary-dark text-black py-4 rounded-2xl font-black shadow-primary-glow active:scale-95 transition-all text-lg">
+            Load
+          </button>
+          <button onclick="toggleImportModal()"
+            class="bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl font-bold transition-all text-lg border border-white/10">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="exportModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="toggleExportModal()"></div>
+    <div
+      class="relative bg-surface border border-white/10 w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl transform transition-all text-center">
+      <div
+        class="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-primary/30">
+        <i class="fas fa-check text-4xl text-primary"></i>
+      </div>
+      <h3 class="text-3xl font-black text-white mb-2 uppercase tracking-tight">Modpack Exported</h3>
+      <p class="text-gray-400 mb-8">Share this code or use it in the MCLC Client to download the modpack.</p>
+
+      <div
+        class="bg-black/50 border border-white/10 rounded-2xl p-6 mb-8 cursor-pointer hover:bg-white/5 transition-colors group"
+        onclick="copyCode()" title="Click to copy">
+        <span id="exportCodeDisplay" class="text-4xl font-black text-primary tracking-[0.2em]">--------</span>
+        <p
+          class="text-xs text-gray-500 font-bold uppercase tracking-widest mt-3 group-hover:text-white transition-colors">
+          <i class="fas fa-copy mr-1"></i> Click to copy
+        </p>
+      </div>
+
+      <button onclick="toggleExportModal()"
+        class="w-full bg-white/10 hover:bg-white/20 text-white py-4 rounded-2xl font-bold transition-all text-lg border border-white/10">
+        Done
+      </button>
+    </div>
+  </div>
+
+  <div id="draftsModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="toggleMyModpacks()"></div>
+    <div
+      class="relative bg-surface border border-white/10 w-full max-w-lg rounded-[2.5rem] p-8 shadow-2xl transform transition-all flex flex-col max-h-[80vh]">
+      <h3 class="text-3xl font-black text-white mb-2 uppercase tracking-tight">My Modpacks</h3>
+      <p class="text-gray-400 mb-8">Restore your recent works or start a new project.</p>
+
+      <div id="draftsModalContent" class="flex-grow overflow-y-auto custom-scrollbar pr-2 mb-6 min-h-[200px]">
+      </div>
+
+      <button onclick="toggleMyModpacks()"
+        class="w-full bg-white/10 hover:bg-white/20 text-white py-4 rounded-2xl font-bold transition-all text-lg border border-white/10 mt-auto">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <nav
+    class="fixed top-0 left-0 right-0 z-[100] bg-background/80 backdrop-blur-xl border-b border-white/5 transition-all duration-300"
+    id="navbar">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+      <div class="flex items-center justify-between h-20">
+        <a href="index.html" class="flex items-center gap-3 group shrink-0">
+          <img src="resources/icon.png" alt="MCLC Logo"
+            class="w-10 h-10 object-contain group-hover:scale-110 transition-transform duration-300" />
+          <span class="text-2xl font-extrabold tracking-tighter text-white">MCLC</span>
+        </a>
+        <div
+          class="hidden md:flex items-center gap-6 lg:gap-10 text-sm font-semibold tracking-wide uppercase text-gray-400">
+          <a href="index.html#features" class="hover:text-primary transition-colors">Features</a>
+          <a href="https://pluginhub.de/discord.html" class="hover:text-primary transition-colors">Support</a>
+          <a href="docs/index.html" class="hover:text-primary transition-colors">Documentation</a>
+          <a href="extensions.html" class="hover:text-primary transition-colors">Extensions</a>
+          <a href="modpack.html" class="text-gray-400 hover:text-primary transition-colors font-semibold">Modpack
+            Editor</a>
+          <a href="https://github.com/Fernsehheft/MCLC-Client" class="hover:text-primary transition-colors"
+            target="_blank">GitHub</a>
+        </div>
+        <div class="flex items-center gap-4" id="nav-right-group">
+          <div class="hidden md:block">
+            <button onclick="toggleModal()"
+              class="bg-primary hover:bg-primary-dark text-black px-6 py-2.5 rounded-xl font-bold transition-all shadow-primary-glow transform hover:scale-105 active:scale-95 shrink-0 whitespace-nowrap">
+              Download
+            </button>
+          </div>
+          <button id="mobile-menu-btn"
+            class="md:hidden text-gray-300 hover:text-primary focus:outline-none transition-colors p-2">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-menu"
+      class="md:hidden bg-surface/95 backdrop-blur-xl border-b border-white/5 overflow-hidden transition-all duration-300 h-0">
+      <div
+        class="px-6 py-6 space-y-4 flex flex-col items-center text-center font-semibold text-gray-300 uppercase tracking-wide">
+        <a href="index.html" class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
+          onclick="toggleMenu()">Home</a>
+        <a href="index.html#features"
+          class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
+          onclick="toggleMenu()">Features</a>
+        <a href="https://pluginhub.de/discord.html"
+          class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
+          onclick="toggleMenu()">Support</a>
+        <a href="docs/index.html"
+          class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
+          onclick="toggleMenu()">Documentation</a>
+        <a href="extensions.html"
+          class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
+          onclick="toggleMenu()">Extensions</a>
+        <a href="modpack.html"
+          class="block w-full py-2 text-primary hover:text-white hover:bg-white/5 rounded-lg transition-all"
+          onclick="toggleMenu()">Modpack Editor</a>
+        <a href="https://github.com/Fernsehheft/MCLC-Client" target="_blank"
+          class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
+          onclick="toggleMenu()">GitHub</a>
+        <button onclick="toggleModal(); toggleMenu();"
+          class="block w-full bg-primary text-black py-4 rounded-xl font-black mt-4 shadow-primary-glow active:scale-95 transition-all">
+          Download Now
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow pt-28 pb-12 px-6 flex flex-col max-w-[1600px] w-full mx-auto gap-6 relative">
+    <div
+      class="absolute top-[10%] left-[20%] w-[40vw] h-[40vw] bg-primary/5 rounded-full blur-[120px] animate-pulse pointer-events-none -z-10">
+    </div>
+    <div
+      class="absolute bottom-[20%] right-[10%] w-[30vw] h-[30vw] bg-primary/5 rounded-full blur-[100px] animate-pulse pointer-events-none -z-10"
+      style="animation-delay: 1.5s;"></div>
+
+    <div
+      class="bg-surface/60 backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 lg:p-8 flex flex-col xl:flex-row gap-6 items-center justify-between shadow-2xl z-10 transition-all">
+
+      <div class="flex flex-wrap md:flex-nowrap gap-4 w-full xl:w-auto flex-grow">
+        <div class="flex flex-col flex-grow min-w-[150px]">
+          <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 px-1">Modpack Name</label>
+          <input type="text" id="packName" placeholder="My Awesome Pack"
+            class="w-full bg-black/40 border border-white/10 rounded-xl h-[52px] px-5 text-white placeholder-gray-600 focus:outline-none focus:border-primary focus:bg-white/5 transition-all font-semibold">
+        </div>
+
+        <div class="flex flex-col w-full md:w-32 lg:w-40">
+          <label
+            class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 px-1 text-center">Version</label>
+          <input type="text" id="packVersion" value="1.20.1" placeholder="e.g. 1.20.1"
+            class="w-full bg-black/40 border border-white/10 rounded-xl h-[52px] px-5 text-white placeholder-gray-600 focus:outline-none focus:border-primary focus:bg-white/5 transition-all font-semibold text-center">
+        </div>
+
+        <div class="flex flex-col w-full md:w-32 lg:w-40">
+          <label
+            class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 px-1 text-center">Loader</label>
+          <select id="packLoader"
+            class="w-full bg-black/40 border border-white/10 rounded-xl h-[52px] px-5 text-white focus:outline-none focus:border-primary focus:bg-white/5 transition-all font-semibold appearance-none cursor-pointer">
+            <option value="fabric">Fabric</option>
+            <option value="forge">Forge</option>
+            <option value="neoforge">NeoForge</option>
+            <option value="quilt">Quilt</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap sm:flex-nowrap gap-4 w-full xl:w-auto mt-[12px]">
+        <button id="myModpacksBtn" onclick="toggleMyModpacks()"
+          class="flex-grow sm:flex-none h-[46px] px-5 bg-primary/10 hover:bg-primary text-primary hover:text-black border border-primary/20 hover:border-primary rounded-xl font-bold transition-all flex items-center justify-center gap-2 group/btn">
+          <i class="fas fa-box-archive text-sm"></i> My Modpacks
+        </button>
+
+        <button onclick="toggleImportModal()"
+          class="flex-grow sm:flex-none h-[46px] px-5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 group/btn">
+          <i class="fas fa-file-import text-sm text-gray-500 group-hover/btn:text-primary transition-colors"></i> Load
+          Code
+        </button>
+
+        <button onclick="exportModpack()" id="exportBtn"
+          class="flex-grow sm:flex-none lg:min-w-[160px] h-[46px] px-6 bg-gradient-to-br from-primary to-primary-dark hover:shadow-[0_0_25px_rgba(27,217,106,0.4)] text-black rounded-xl font-black transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2">
+          <i class="fas fa-share-nodes text-sm"></i> Export
+        </button>
+      </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-6 flex-grow min-h-[600px] z-10">
+
+      <div class="w-full lg:w-2/3 flex flex-col gap-6">
+        <div class="relative group">
+          <div
+            class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-gray-500 group-focus-within:text-primary transition-colors">
+            <i class="fas fa-search"></i>
+          </div>
+          <input type="text" id="modSearchInput" placeholder="Search Modrinth for mods..."
+            class="w-full bg-surface/60 backdrop-blur-xl border border-white/10 rounded-[1.5rem] py-5 pl-14 pr-6 text-white placeholder-gray-500 focus:outline-none focus:border-primary focus:bg-white/5 focus:shadow-[0_0_20px_rgba(27,217,106,0.1)] transition-all text-lg shadow-xl">
+        </div>
+
+        <div
+          class="bg-surface/40 backdrop-blur-xl border border-white/5 rounded-[2rem] p-6 shadow-2xl flex-grow overflow-hidden flex flex-col">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+              <i class="fas fa-compass text-primary"></i> Browse Mods
+            </h2>
+            <span id="searchResultCount"
+              class="text-xs font-bold text-gray-500 bg-white/5 px-3 py-1 rounded-full uppercase tracking-widest">---</span>
+          </div>
+
+          <div id="searchResults"
+            class="overflow-y-auto flex-grow custom-scrollbar pr-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 pb-4 relative">
+
+            <div id="suggestedModsContainer" class="col-span-full">
+              <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <i class="fas fa-fire text-orange-500"></i> Popular Mods
+              </h3>
+              <div id="suggestedModsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-full py-10 text-center text-gray-500">
+                  <i class="fas fa-spinner fa-spin text-3xl mb-3 opacity-50"></i>
+                  <p>Lade beliebte Mods...</p>
+                </div>
+              </div>
+            </div>
+
+            <div id="actualSearchResults" class="col-span-full grid grid-cols-1 md:grid-cols-2 gap-4 hidden"></div>
+
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="w-full lg:w-1/3 bg-surface/60 backdrop-blur-xl border border-white/10 rounded-[2rem] flex flex-col shadow-2xl overflow-hidden">
+        <div class="p-6 border-b border-white/5 bg-black/20 flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-black text-white tracking-tight">Your Modpack</h2>
+            <p class="text-xs text-gray-400 font-semibold mt-1">Currently installed mods</p>
+          </div>
+          <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+            <span id="modCount" class="text-lg font-black text-primary">0</span>
+          </div>
+        </div>
+
+        <div id="currentMods" class="flex-grow overflow-y-auto p-4 custom-scrollbar space-y-3 relative min-h-[400px]">
+          <div id="emptyPackState"
+            class="absolute inset-0 flex flex-col items-center justify-center p-8 text-center pointer-events-none">
+            <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4 border border-white/10">
+              <i class="fas fa-box-open text-2xl text-gray-600"></i>
+            </div>
+            <p class="text-gray-400 font-medium tracking-wide">Your modpack is empty</p>
+            <p class="text-gray-600 text-sm mt-2 font-medium">Search for mods on the left and click Add to include them.
+            </p>
+          </div>
+        </div>
+
+        <div id="modPagination" class="hidden p-6 border-t border-white/5 bg-black/20 flex flex-col gap-4">
+          <div class="flex items-center justify-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
+            <span id="currentModPage">Page 1 of 1</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <button id="prevModPage" onclick="prevPage()"
+              class="bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-white/5 text-white py-3 rounded-xl font-bold transition-all border border-white/5 flex items-center justify-center gap-2 text-sm">
+              <i class="fas fa-chevron-left text-[10px]"></i> Prev
+            </button>
+            <button id="nextModPage" onclick="nextPage()"
+              class="bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-white/5 text-white py-3 rounded-xl font-bold transition-all border border-white/5 flex items-center justify-center gap-2 text-sm">
+              Next <i class="fas fa-chevron-right text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div id="recentDraftsContainer" class="hidden p-6 border-t border-white/5 bg-black/10">
+        <h3 class="text-xs font-black text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+          <i class="fas fa-history"></i> Recent Drafts
+        </h3>
+        <div id="recentDraftsList" class="space-y-2"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-12 bg-background border-t border-white/5 mt-auto z-10 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+        <div class="flex items-center gap-3">
+          <img src="resources/icon.png" alt="MCLC Logo" class="w-8 h-8 opacity-50" />
+          <span class="text-xl font-bold text-gray-500 tracking-tighter">MCLC</span>
+        </div>
+        <div
+          class="flex flex-wrap justify-center gap-6 md:gap-8 text-sm font-medium text-gray-500 uppercase tracking-widest">
+          <a href="index.html" class="hover:text-primary transition-colors">Home</a>
+          <a href="imprint.html" class="hover:text-primary transition-colors">Imprint</a>
+          <a href="privacy.html" class="hover:text-primary transition-colors">Privacy</a>
+        </div>
+        <p class="text-gray-600 text-xs text-center md:text-right">
+          &copy; 2026 MCLC Team. Not an official Minecraft product.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(27, 217, 106, 0.5);
+    }
+
+    select {
+      -moz-appearance: none;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem top 50%;
+      background-size: 0.65rem auto;
+    }
+
+    select option {
+      background-color: #121212;
+      color: #fff;
+    }
+  </style>
+
+  <script src="main.js?v=6"></script>
+  <script>
+    function toggleModal() {
+      const modal = document.getElementById('downloadModal');
+      if (modal) {
+        modal.classList.toggle('hidden');
+        modal.classList.toggle('flex');
+        document.body.classList.toggle('overflow-hidden');
+      }
+    }
+    function toggleMenu() {
+      const menu = document.getElementById('mobile-menu');
+      if (menu) {
+        if (menu.classList.contains('h-0')) {
+          menu.classList.remove('h-0');
+          menu.classList.add('h-auto');
+        } else {
+          menu.classList.add('h-0');
+          menu.classList.remove('h-auto');
+        }
+      }
+    }
+  </script>
+  <script src="modpack_editor.js?v=3"></script>
+</body>
+
+</html>

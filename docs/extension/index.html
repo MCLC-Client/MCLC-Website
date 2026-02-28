@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth bg-background text-gray-200 antialiased">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCLC - Extension Development Guide</title>
+  <link rel="icon" type="image/png" href="../../resources/icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Poppins:wght@400;700&display=swap"
+    rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#1bd96a",
+            "primary-dark": "#14a34f",
+            surface: "#121212",
+            background: "#080808",
+            "accent-dark": "#0f0f0f",
+          },
+          fontFamily: {
+            sans: ["Outfit", "Poppins", "sans-serif"],
+          },
+          boxShadow: {
+            "primary-glow": "0 0 30px rgba(27, 217, 106, 0.25)",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(27, 217, 106, 0.5);
+    }
+
+    .wiki-nav-link.active {
+      color: #1bd96a;
+      border-left: 2px solid #1bd96a;
+      padding-left: 14px;
+    }
+
+    .wiki-nav-link {
+      padding-left: 16px;
+      transition: all 0.2s;
+    }
+
+    .wiki-nav-link:hover {
+      color: white;
+      padding-left: 20px;
+    }
+  </style>
+</head>
+
+<body class="bg-background min-h-screen text-gray-300 font-sans">
+  <nav
+    class="fixed top-0 left-0 right-0 z-[100] transition-all duration-300 bg-background/80 backdrop-blur-xl border-b border-white/5"
+    id="navbar">
+    <div class="max-w-[1600px] mx-auto px-6 h-full flex items-center justify-between">
+      <a href="../../index.html" class="flex items-center gap-3 group shrink-0">
+        <img src="../../resources/icon.png?v=2" alt="MCLC Logo"
+          class="w-10 h-10 object-contain group-hover:scale-110 transition-transform duration-300" />
+        <span class="text-2xl font-extrabold tracking-tighter text-white">MCLC</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm font-semibold tracking-wide uppercase text-gray-400">
+        <a href="../../index.html" class="hover:text-primary transition-colors">Information</a>
+        <a href="../../extensions.html" class="hover:text-primary transition-colors">Mods</a>
+        <a href="../index.html" class="text-primary transition-colors font-bold">Documentation</a>
+        <a href="../../privacy.html" class="hover:text-primary transition-colors">Privacy</a>
+        <a href="https://github.com/Fernsehheft/MCLC-Client" class="hover:text-primary transition-colors"
+          target="_blank">GitHub</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="hidden md:block">
+          <a href="../../index.html#"
+            class="bg-primary hover:bg-primary-dark text-black px-6 py-2.5 rounded-xl font-bold transition-all shadow-primary-glow transform hover:scale-105 active:scale-95 shrink-0 whitespace-nowrap">
+            Download
+          </a>
+        </div>
+        <button onclick="toggleMenu()"
+          class="md:hidden text-gray-300 hover:text-primary focus:outline-none transition-colors p-2">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu"
+      class="hidden md:hidden bg-surface/95 backdrop-blur-xl border-b border-white/5 overflow-hidden transition-all duration-300">
+      <div
+        class="px-6 py-6 space-y-4 flex flex-col items-center text-center font-semibold text-gray-300 uppercase tracking-wide">
+        <a href="../../index.html"
+          class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all">Information</a>
+        <a href="../../extensions.html"
+          class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all">Mods</a>
+        <a href="../index.html"
+          class="block w-full py-2 text-primary font-bold hover:bg-white/5 rounded-lg transition-all">Documentation</a>
+        <a href="../../privacy.html"
+          class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all">Privacy</a>
+        <a href="https://github.com/Fernsehheft/MCLC-Client" target="_blank"
+          class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all">GitHub</a>
+        <a href="../../index.html#"
+          class="block w-full bg-primary text-black py-4 rounded-xl font-black mt-4 shadow-primary-glow active:scale-95 transition-all">Download
+          Now</a>
+      </div>
+    </div>
+  </nav>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+  </script>
+
+  <div class="max-w-[1600px] mx-auto pt-24 flex min-h-screen">
+    <aside
+      class="w-72 fixed left-0 top-24 bottom-0 overflow-y-auto custom-scrollbar px-8 py-10 border-r border-white/5 bg-background hidden lg:block">
+      <div class="space-y-10">
+        <div>
+          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Development</h3>
+          <ul class="space-y-4 text-sm font-medium">
+            <li><a href="#structure" class="wiki-nav-link block active">File Structure</a></li>
+            <li><a href="#manifest" class="wiki-nav-link block">manifest.json</a></li>
+            <li><a href="#mainjs" class="wiki-nav-link block">main.js Hooks</a></li>
+            <li><a href="#api" class="wiki-nav-link block">Extension API</a></li>
+            <li><a href="#packaging" class="wiki-nav-link block">Packaging</a></li>
+            <li><a href="#troubleshooting" class="wiki-nav-link block">Troubleshooting</a></li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <main class="flex-grow lg:ml-72 px-6 py-12 lg:px-16 max-w-5xl">
+      <article class="prose prose-invert max-w-none">
+        <header class="mb-16">
+          <h1 class="text-5xl font-black text-white mb-6 tracking-tight">Extension Development</h1>
+          <p class="text-xl text-gray-400 leading-relaxed">
+            Learn how to create, build, and publish your own extensions for the MCLC Launcher.
+          </p>
+        </header>
+
+        <section id="structure" class="mb-20">
+          <h2 class="text-3xl font-extrabold text-white mb-8 flex items-center gap-4">
+            <span class="text-primary">#</span> 1. File Structure
+          </h2>
+          <p class="mb-6">
+            An extension is a <span class="text-primary font-bold">ZIP</span> file containing the following required
+            structure at the root:
+          </p>
+          <pre
+            class="bg-surface border border-white/5 rounded-2xl p-6 text-primary font-mono text-sm overflow-x-auto shadow-primary-glow">
+<code>my-extension/
+├── manifest.json  (Required)
+├── main.js        (Required - Entry Point)
+└── (other files)</code>
+                    </pre>
+        </section>
+
+        <section id="manifest" class="mb-20">
+          <h2 class="text-3xl font-extrabold text-white mb-8 flex items-center gap-4">
+            <span class="text-primary">#</span> 2. manifest.json
+          </h2>
+          <p class="mb-6 text-gray-400">Defines metadata about your extension. This is used by the launcher to display
+            information to the user.</p>
+          <pre class="bg-surface border border-white/5 rounded-2xl p-6 text-blue-300 font-mono text-sm overflow-x-auto">
+<code>{
+  "id": "my-awesome-extension",
+  "name": "My Awesome Extension",
+  "version": "1.0.0",
+  "description": "Adds a cool new feature.",
+  "author": "YourName",
+  "main": "main.js"
+}</code>
+                    </pre>
+        </section>
+
+        <section id="mainjs" class="mb-20">
+          <h2 class="text-3xl font-extrabold text-white mb-8 flex items-center gap-4">
+            <span class="text-primary">#</span> 3. main.js Hooks
+          </h2>
+          <p class="mb-6 text-gray-400">The extension system runs your code in a sandboxed environment. You must expose
+            specific hooks.</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-surface/30 p-6 rounded-2xl border border-white/5">
+              <h4 class="text-primary font-bold mb-2">activate(api)</h4>
+              <p class="text-xs text-gray-500">Called when the extension is enabled or the app starts.</p>
+            </div>
+            <div class="bg-surface/30 p-6 rounded-2xl border border-white/5">
+              <h4 class="text-primary font-bold mb-2">deactivate()</h4>
+              <p class="text-xs text-gray-500">Called when the extension is disabled or removed.</p>
+            </div>
+          </div>
+
+          <pre class="bg-surface border border-white/5 rounded-2xl p-6 text-cyan-300 font-mono text-sm overflow-x-auto">
+<code>/* Example main.js */
+exports.activate = async (api) => {
+    api.ui.toast("Extension loaded!", "success");
+    
+    // Register a UI view
+    api.ui.registerView('sidebar.bottom', () => {
+        return React.createElement('div', null, "Hello!");
+    });
+};</code>
+                    </pre>
+        </section>
+
+        <section id="api" class="mb-20">
+          <h2 class="text-3xl font-extrabold text-white mb-8 flex items-center gap-4">
+            <span class="text-primary">#</span> 4. Extension API
+          </h2>
+          <div class="space-y-6">
+            <div class="bg-surface/20 border border-white/5 p-6 rounded-2xl">
+              <h4 class="text-white font-bold mb-3">api.ui</h4>
+              <ul class="text-sm text-gray-400 space-y-2">
+                <li><code class="text-primary">toast(message, type)</code> - Show a notification</li>
+                <li><code class="text-primary">registerView(slot, component)</code> - Add UI to the launcher</li>
+              </ul>
+            </div>
+            <div class="bg-surface/20 border border-white/5 p-6 rounded-2xl">
+              <h4 class="text-white font-bold mb-3">api.storage</h4>
+              <ul class="text-sm text-gray-400 space-y-2">
+                <li><code class="text-primary">get(key)</code> - Retrieve stored data</li>
+                <li><code class="text-primary">set(key, value)</code> - Save data persistently</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="packaging" class="mb-20">
+          <h2 class="text-3xl font-extrabold text-white mb-8 flex items-center gap-4">
+            <span class="text-primary">#</span> 5. Packaging
+          </h2>
+          <div class="space-y-4 text-gray-400">
+            <div class="flex gap-4">
+              <div
+                class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold shrink-0">
+                1</div>
+              <p>Select all files inside your extension folder.</p>
+            </div>
+            <div class="flex gap-4">
+              <div
+                class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold shrink-0">
+                2</div>
+              <p>Compress to a <span class="text-white font-bold">ZIP</span> file.</p>
+            </div>
+            <div class="flex gap-4">
+              <div
+                class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold shrink-0">
+                3</div>
+              <p>Rename the extension to <code class="text-primary">.mcextension</code> (optional).</p>
+            </div>
+          </div>
+        </section>
+      </article>
+    </main>
+
+    <aside class="w-64 fixed right-0 top-24 bottom-0 p-10 hidden xl:block">
+      <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-6">On this page</h4>
+      <nav class="space-y-4 text-xs font-bold text-gray-500">
+        <a href="#structure" class="block hover:text-white transition-colors">File Structure</a>
+        <a href="#manifest" class="block hover:text-white transition-colors">manifest.json</a>
+        <a href="#mainjs" class="block hover:text-white transition-colors">main.js Hooks</a>
+        <a href="#api" class="block hover:text-white transition-colors">Extension API</a>
+        <a href="#packaging" class="block hover:text-white transition-colors">Packaging</a>
+      </nav>
+    </aside>
+  </div>
+
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          e.preventDefault();
+          targetElement.scrollIntoView({
+            behavior: 'smooth'
+          });
+
+          document.querySelectorAll('.wiki-nav-link').forEach(link => link.classList.remove('active', 'text-primary', 'font-bold'));
+          this.classList.add('active', 'text-primary', 'font-bold');
+        }
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      let current = "";
+      const sections = document.querySelectorAll('section');
+      sections.forEach(section => {
+        if (pageYOffset >= section.offsetTop - 100) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      document.querySelectorAll('.wiki-nav-link').forEach(link => {
+        link.classList.remove('active', 'text-primary', 'font-bold');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active', 'text-primary', 'font-bold');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

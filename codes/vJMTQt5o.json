@@ -1,0 +1,255 @@
+{
+  "code": "vJMTQt5o",
+  "name": "PVP MISCHE Export",
+  "version": "1.21.8",
+  "loader": "fabric",
+  "mods": [
+    {
+      "projectId": "HAE5KvTA",
+      "versionId": "aSDG6GgF",
+      "fileName": "Boxlib-fabric-18.0.3.jar",
+      "title": "BoxLib",
+      "icon": "https://cdn.modrinth.com/data/HAE5KvTA/d2ce90f1252c06610497a53f95e9979547e96965.webp"
+    },
+    {
+      "projectId": "OsZiaDHq",
+      "versionId": "mj0ahfMl",
+      "fileName": "CreativeCore_FABRIC_v2.14.7_mc1.21.8.jar",
+      "title": "CreativeCore",
+      "icon": "https://cdn.modrinth.com/data/OsZiaDHq/4953ecd3c0c8b185b2a56d64cdb104b03f3e5038_96.webp"
+    },
+    {
+      "projectId": "k2ZPuTBm",
+      "versionId": "jyl3NniX",
+      "fileName": "Essential_1-3-10-4_fabric_1-21-8.jar",
+      "title": "Essential Mod",
+      "icon": "https://cdn.modrinth.com/data/k2ZPuTBm/7f7ac7cf2a46d5f02e9644372c44b3095ad61ffb_96.webp"
+    },
+    {
+      "projectId": "wdLuzzEP",
+      "versionId": "LlhEeSLj",
+      "fileName": "Gamma-Utils-2.3.6+mc1.21.8.jar",
+      "title": "Gamma Utils (Fullbright)",
+      "icon": "https://cdn.modrinth.com/data/wdLuzzEP/b6014c210bbedacf610f7d2dba55149dae9677c8.png"
+    },
+    {
+      "projectId": "OuyCgP8t",
+      "versionId": "cz8HVUvf",
+      "fileName": "ItemPhysicLite_FABRIC_v1.6.10_mc1.21.8.jar",
+      "title": "ItemPhysic Lite",
+      "icon": "https://cdn.modrinth.com/data/OuyCgP8t/0b6af647b8bd2f5b7230b86566311692273f3360_96.webp"
+    },
+    {
+      "projectId": "RBViihu3",
+      "versionId": "9DQavgwj",
+      "fileName": "McOverTor-1.6.2.jar",
+      "title": "Tor-MC",
+      "icon": "https://cdn.modrinth.com/data/RBViihu3/e2d59a2ecd8b1c854acccb6a460ef05f33232eaf_96.webp"
+    },
+    {
+      "projectId": "aC3cM3Vq",
+      "versionId": "K0YD3bG1",
+      "fileName": "MouseTweaks-fabric-mc1.21.6-2.28.jar",
+      "title": "Mouse Tweaks",
+      "icon": "https://cdn.modrinth.com/data/aC3cM3Vq/6c0eaa4e60a9c87f4766f222ff63286f09da32c0_96.webp"
+    },
+    {
+      "projectId": "GfoMZ9Ly",
+      "versionId": "lHNyy4SF",
+      "fileName": "ShieldStatus-4.1.1-1.21.7.jar",
+      "title": "Shield Statuses",
+      "icon": "https://cdn.modrinth.com/data/GfoMZ9Ly/ad8f2f8c6814f17eaece05127b1d5278ecf98419.png"
+    },
+    {
+      "projectId": "dpkYdLu5",
+      "versionId": "fnmBbCmI",
+      "fileName": "TierTagger-2.2.2+mc1.21.6.jar",
+      "title": "Tier Tagger",
+      "icon": "https://cdn.modrinth.com/data/dpkYdLu5/615620ee7555fdb5d825427a3b63bb6201d073e2_96.webp"
+    },
+    {
+      "projectId": "7P86n6Vg",
+      "versionId": "pQZomXuv",
+      "fileName": "WalksyLib-0.9.96+1.21.6.jar",
+      "title": "WalksyLib",
+      "icon": "https://cdn.modrinth.com/data/7P86n6Vg/ae681f3326e26337b61ccb660ffba988565c017d.png"
+    },
+    {
+      "projectId": "EsAfCjCV",
+      "versionId": "YAjCkZ29",
+      "fileName": "appleskin-fabric-mc1.21.6-3.0.6.jar",
+      "title": "AppleSkin",
+      "icon": "https://cdn.modrinth.com/data/EsAfCjCV/icon.png"
+    },
+    {
+      "projectId": "9s6osm5g",
+      "versionId": "cz0b1j8R",
+      "fileName": "cloth-config-19.0.147-fabric.jar",
+      "title": "Cloth Config API",
+      "icon": "https://cdn.modrinth.com/data/9s6osm5g/ed8a2316cbb6f4fc5f510e8e13a59a85cbbbff4d_96.webp"
+    },
+    {
+      "projectId": "3mW8PdUo",
+      "versionId": "ofm95YzA",
+      "fileName": "coordinatesdisplay-fabric-17.0.2.jar",
+      "title": "Coordinates Display",
+      "icon": "https://cdn.modrinth.com/data/3mW8PdUo/812200156b5283d05d11c436fd91f4beccdbf743_96.webp"
+    },
+    {
+      "projectId": "P7dR8mSH",
+      "versionId": "g58ofrov",
+      "fileName": "fabric-api-0.136.1+1.21.8.jar",
+      "title": "Fabric API",
+      "icon": "https://cdn.modrinth.com/data/P7dR8mSH/icon.png"
+    },
+    {
+      "projectId": "g4pR0Fmy",
+      "versionId": "ptt6wi97",
+      "fileName": "freelook-1.2.5.jar",
+      "title": "Freelook",
+      "icon": "https://cdn.modrinth.com/data/g4pR0Fmy/5d3c07e924375338de75943ef6668b21ffdd0a15_96.webp"
+    },
+    {
+      "fileName": "inventoryhud.fabric.1.21.8-3.4.27.jar",
+      "title": "inventoryhud.fabric.1.21.8-3.4.27.jar",
+      "icon": null
+    },
+    {
+      "projectId": "YL57xq9U",
+      "versionId": "Rhzf61g1",
+      "fileName": "iris-fabric-1.9.6+mc1.21.8.jar",
+      "title": "Iris Shaders",
+      "icon": "https://cdn.modrinth.com/data/YL57xq9U/18d0e7f076d3d6ed5bedd472b853909aac5da202_96.webp"
+    },
+    {
+      "projectId": "gvQqBUqZ",
+      "versionId": "qxIL7Kb8",
+      "fileName": "lithium-fabric-0.18.1+mc1.21.8.jar",
+      "title": "Lithium",
+      "icon": "https://cdn.modrinth.com/data/gvQqBUqZ/bcc8686c13af0143adf4285d741256af824f70b7_96.webp"
+    },
+    {
+      "projectId": "mOgUt4GM",
+      "versionId": "kiOz1Uxm",
+      "fileName": "modmenu-15.0.1.jar",
+      "title": "Mod Menu",
+      "icon": "https://cdn.modrinth.com/data/mOgUt4GM/5a20ed1450a0e1e79a1fe04e61bb4e5878bf1d20.png"
+    },
+    {
+      "projectId": "JHgf35QL",
+      "versionId": "nyexQFPe",
+      "fileName": "nemos-inventory-sorting-Fabric-1.21.8-1.14.4.jar",
+      "title": "Nemo's Inventory Sorting",
+      "icon": "https://cdn.modrinth.com/data/JHgf35QL/003007cfbe48cb6ab67746e103dc6b07a6d4b96e_96.webp"
+    },
+    {
+      "projectId": "ewDIrid2",
+      "versionId": "TzzFN7UE",
+      "fileName": "no-fire-overlay_1.21.6-1.21.8_v1.1.0.jar",
+      "title": "No Fire Overlay (Mod)",
+      "icon": "https://cdn.modrinth.com/data/ewDIrid2/9d7cf1f8f780adc4c2d86ca62b8e93c0a096f589.png"
+    },
+    {
+      "projectId": "eXts2L7r",
+      "versionId": "1S1kjZ9W",
+      "fileName": "placeholder-api-2.7.2+1.21.8.jar",
+      "title": "Text Placeholder API",
+      "icon": "https://cdn.modrinth.com/data/eXts2L7r/e9c9990896e6422bffc5f73d2c41b8f077348f83.png"
+    },
+    {
+      "projectId": "2M01OLQq",
+      "versionId": "XWxojbLp",
+      "fileName": "shulkerboxtooltip-fabric-5.2.12+1.21.8.jar",
+      "title": "Shulker Box Tooltip",
+      "icon": "https://cdn.modrinth.com/data/2M01OLQq/bb490716cf2590cf84100a495931c3d4743bce43_96.webp"
+    },
+    {
+      "projectId": "AANobbMI",
+      "versionId": "7pwil2dy",
+      "fileName": "sodium-fabric-0.7.3+mc1.21.8.jar",
+      "title": "Sodium",
+      "icon": "https://cdn.modrinth.com/data/AANobbMI/295862f4724dc3f78df3447ad6072b2dcd3ef0c9_96.webp"
+    },
+    {
+      "projectId": "Y8uFrUil",
+      "versionId": "AdBiSP4T",
+      "fileName": "ukulib-1.8.2+1.21.6.jar",
+      "title": "ukulib",
+      "icon": "https://cdn.modrinth.com/data/Y8uFrUil/3306adc6d3ba21b11bb14f06f00c21cd5f47e506.webp"
+    },
+    {
+      "projectId": "fRhq4ueb",
+      "versionId": "jP76V1p6",
+      "fileName": "villager-trading-plus-1.1+1.21.jar",
+      "title": "Villager Trading Plus",
+      "icon": "https://cdn.modrinth.com/data/fRhq4ueb/f13c2b78c36775c59e834aa5311d1a02ec349b13_96.webp"
+    },
+    {
+      "projectId": "9eGKb6K1",
+      "versionId": "NolGXq9F",
+      "fileName": "voicechat-fabric-1.21.8-2.6.12.jar",
+      "title": "Simple Voice Chat",
+      "icon": "https://cdn.modrinth.com/data/9eGKb6K1/icon.png"
+    }
+  ],
+  "resourcePacks": [
+    {
+      "projectId": "uBBepXuH",
+      "versionId": "ldNQD8Jz",
+      "fileName": "animated-items 1.21.x - v1.5.4.zip",
+      "title": "Animated Items",
+      "icon": "https://cdn.modrinth.com/data/uBBepXuH/a99ff57b9622dcec8483f9c1bbafb37667d3b407_96.webp"
+    },
+    {
+      "projectId": "sn2HxtR3",
+      "versionId": "xiFsRU6w",
+      "fileName": "Crystal Vanilla Tweaks 1.21.7-8.zip",
+      "title": "Crystal Vanilla Tweaks",
+      "icon": "https://cdn.modrinth.com/data/sn2HxtR3/9dd8934e4648c893fe8aa88b39fb16d760df34fd_96.webp"
+    },
+    {
+      "projectId": "ptbRZp4U",
+      "versionId": "M9KeQKnq",
+      "fileName": "G-Anti-Xray.zip",
+      "title": "G-AntiXray",
+      "icon": "https://cdn.modrinth.com/data/ptbRZp4U/abacf2d872d58295135a96d9635aca1e9d70e2d9_96.webp"
+    },
+    {
+      "projectId": "RRxvWKNC",
+      "versionId": "kFcenifC",
+      "fileName": "LowOnFire v1.21.8§8.zip",
+      "title": "Low On Fire",
+      "icon": "https://cdn.modrinth.com/data/RRxvWKNC/06a7e7691a6da41798c255108a8563d7ffea171d.png"
+    },
+    {
+      "fileName": "pack.zip",
+      "title": "pack.zip",
+      "icon": null
+    },
+    {
+      "projectId": "75LOHkEN",
+      "versionId": "JXvXA74P",
+      "fileName": "Purple-HUD-1.1.zip",
+      "title": "Cleared neon purple HUD",
+      "icon": "https://cdn.modrinth.com/data/75LOHkEN/d3b88736d434b9e0d5a550df53c3e1e7a2f6b67b.png"
+    },
+    {
+      "fileName": "Xray_Ultimate_1.21_v5.2.2 (2).zip",
+      "title": "Xray_Ultimate_1.21_v5.2.2 (2).zip",
+      "icon": null
+    }
+  ],
+  "shaders": [
+    {
+      "projectId": "HVnmMxH1",
+      "versionId": "836bPNGo",
+      "fileName": "ComplementaryReimagined_r5.7.1.zip",
+      "title": "Complementary Shaders - Reimagined",
+      "icon": "https://cdn.modrinth.com/data/HVnmMxH1/79cb7c8123bbc54945305b2ebad6b8881efdf5f8_96.webp"
+    }
+  ],
+  "keybinds": "version:4440\r\nao:true\r\nbiomeBlendRadius:2\r\nenableVsync:true\r\nentityDistanceScaling:1.0\r\nentityShadows:true\r\nforceUnicodeFont:false\r\njapaneseGlyphVariants:false\r\nfov:0.0\r\nfovEffectScale:1.0\r\ndarknessEffectScale:1.0\r\nglintSpeed:0.5\r\nglintStrength:0.75\r\nprioritizeChunkUpdates:0\r\nfullscreen:false\r\ngraphicsMode:1\r\nguiScale:2\r\nmaxFps:160\r\ninactivityFpsLimit:\"afk\"\r\nmipmapLevels:4\r\nnarrator:0\r\nparticles:0\r\nreducedDebugInfo:false\r\nrenderClouds:\"false\"\r\ncloudRange:50\r\nrenderDistance:15\r\nsimulationDistance:15\r\nscreenEffectScale:1.0\r\nsoundDevice:\"OpenAL Soft on Voicemeeter AUX Input (VB-Audio Voicemeeter VAIO)\"\r\nautoJump:false\r\nrotateWithMinecart:false\r\noperatorItemsTab:false\r\nautoSuggestions:true\r\nchatColors:true\r\nchatLinks:true\r\nchatLinksPrompt:true\r\ndiscrete_mouse_scroll:false\r\ninvertYMouse:false\r\nrealmsNotifications:true\r\nshowSubtitles:false\r\ndirectionalAudio:false\r\ntouchscreen:false\r\nbobView:true\r\ntoggleCrouch:false\r\ntoggleSprint:false\r\ndarkMojangStudiosBackground:false\r\nhideLightningFlashes:false\r\nhideSplashTexts:false\r\nmouseSensitivity:0.2535211267605634\r\ndamageTiltStrength:1.0\r\nhighContrast:false\r\nhighContrastBlockOutline:false\r\nnarratorHotkey:true\r\nresourcePacks:[\"vanilla\",\"fabric\",\"file/LowOnFire v1.21.8§8.zip\",\"file/pack.zip\"]\r\nincompatibleResourcePacks:[]\r\nlastServer:45.132.91.72:25566\r\nlang:en_us\r\nchatVisibility:0\r\nchatOpacity:1.0\r\nchatLineSpacing:0.0\r\ntextBackgroundOpacity:0.5\r\nbackgroundForChatOnly:true\r\nhideServerAddress:false\r\nadvancedItemTooltips:false\r\npauseOnLostFocus:true\r\noverrideWidth:0\r\noverrideHeight:0\r\nchatHeightFocused:1.0\r\nchatDelay:0.0\r\nchatHeightUnfocused:0.4375\r\nchatScale:1.0\r\nchatWidth:1.0\r\nnotificationDisplayTime:1.0\r\nuseNativeTransport:true\r\nmainHand:\"right\"\r\nattackIndicator:1\r\ntutorialStep:none\r\nmouseWheelSensitivity:1.0\r\nrawMouseInput:true\r\nglDebugVerbosity:1\r\nskipMultiplayerWarning:true\r\nhideMatchedNames:true\r\njoinedFirstServer:true\r\nsyncChunkWrites:true\r\nshowAutosaveIndicator:true\r\nallowServerListing:true\r\nonlyShowSecureChat:false\r\npanoramaScrollSpeed:1.0\r\ntelemetryOptInExtra:false\r\nonboardAccessibility:false\r\nmenuBackgroundBlurriness:5\r\nstartedCleanly:true\r\nshowNowPlayingToast:false\r\nmusicFrequency:\"DEFAULT\"\r\nkey_key.attack:key.mouse.left\r\nkey_key.use:key.mouse.right\r\nkey_key.forward:key.keyboard.w\r\nkey_key.left:key.keyboard.a\r\nkey_key.back:key.keyboard.s\r\nkey_key.right:key.keyboard.d\r\nkey_key.jump:key.keyboard.space\r\nkey_key.sneak:key.keyboard.left.shift\r\nkey_key.sprint:key.keyboard.left.control\r\nkey_key.drop:key.keyboard.q\r\nkey_key.inventory:key.keyboard.e\r\nkey_key.chat:key.keyboard.t\r\nkey_key.playerlist:key.keyboard.tab\r\nkey_key.pickItem:key.mouse.middle\r\nkey_key.command:key.keyboard.slash\r\nkey_key.socialInteractions:key.keyboard.p\r\nkey_key.screenshot:key.keyboard.f2\r\nkey_key.togglePerspective:key.keyboard.r\r\nkey_key.smoothCamera:key.keyboard.unknown\r\nkey_key.fullscreen:key.keyboard.f11\r\nkey_key.spectatorOutlines:key.keyboard.unknown\r\nkey_key.swapOffhand:key.keyboard.f\r\nkey_key.saveToolbarActivator:key.keyboard.f5\r\nkey_key.loadToolbarActivator:key.keyboard.f6\r\nkey_key.advancements:key.keyboard.l\r\nkey_key.quickActions:key.keyboard.pause\r\nkey_key.hotbar.1:key.mouse.5\r\nkey_key.hotbar.2:key.keyboard.2\r\nkey_key.hotbar.3:key.mouse.4\r\nkey_key.hotbar.4:key.keyboard.4\r\nkey_key.hotbar.5:key.keyboard.z\r\nkey_key.hotbar.6:key.keyboard.x\r\nkey_key.hotbar.7:key.keyboard.7\r\nkey_key.hotbar.8:key.keyboard.c\r\nkey_key.hotbar.9:key.keyboard.v\r\nkey_key.coordinatesdisplay.hudenabled:key.keyboard.keypad.9\r\nkey_key.coordinatesdisplay.coordinatesgui:key.keyboard.keypad.8\r\nkey_key.coordinatesdisplay.markpos:key.keyboard.keypad.8\r\nkey_key.coordinatesdisplay.copypos:key.keyboard.unknown\r\nkey_key.coordinatesdisplay.sendpos:key.keyboard.unknown\r\nkey_key.coordinatesdisplay.copypostp:key.keyboard.unknown\r\nkey_key.coordinatesdisplay.changeHudPos:key.keyboard.keypad.7\r\nkey_key.coordinatesdisplay.cycleDisplayMode:key.keyboard.keypad.7\r\nkey_key.coordinatesdisplay.toggle3DCompass:key.keyboard.f8\r\nkey_Toggle SelfState:key.keyboard.unknown\r\nkey_tiertagger.keybind.gamemode:key.keyboard.unknown\r\nkey_freelook.key.activate:key.keyboard.grave.accent\r\nkey_freelook.key.menu:key.keyboard.insert\r\nkey_key.gammautils.gammaToggle:key.keyboard.keypad.5\r\nkey_key.gammautils.increaseGamma:key.keyboard.keypad.3\r\nkey_key.gammautils.decreaseGamma:key.keyboard.keypad.1\r\nkey_key.gammautils.maxGamma:key.keyboard.unknown\r\nkey_key.gammautils.minGamma:key.keyboard.unknown\r\nkey_key.gammautils.nightVisionToggle:key.keyboard.keypad.2\r\nkey_key.gammautils.increaseNightVision:key.keyboard.keypad.4\r\nkey_key.gammautils.decreaseNightVision:key.keyboard.keypad.6\r\nkey_key.inventoryhud.toggle:key.keyboard.page.down\r\nkey_key.inventoryhud.openconfig:key.keyboard.end\r\nkey_key.inventoryhud.togglepot:key.keyboard.unknown\r\nkey_key.inventoryhud.togglearm:key.keyboard.unknown\r\nkey_key.inventoryhud.toggleall:key.keyboard.unknown\r\nkey_key.modmenu.open_menu:key.keyboard.unknown\r\nkey_nemos_inventory_sorting.key.sort:key.keyboard.unknown\r\nkey_nemos_inventory_sorting.key.sortInventory:key.keyboard.unknown\r\nkey_nemos_inventory_sorting.key.moveSame:key.keyboard.unknown\r\nkey_nemos_inventory_sorting.key.moveSameInventory:key.keyboard.unknown\r\nkey_nemos_inventory_sorting.key.moveAll:key.keyboard.unknown\r\nkey_nemos_inventory_sorting.key.moveAllInventory:key.keyboard.unknown\r\nkey_nemos_inventory_sorting.key.dropAll:key.keyboard.unknown\r\nkey_nemos_inventory_sorting.key.dropAllInventory:key.keyboard.unknown\r\nkey_nemos_inventory_sorting.key.toggleFilterPersistence:key.keyboard.unknown\r\nkey_nemos_inventory_sorting.key.quickSearch:key.keyboard.page.up\r\nkey_key.push_to_talk:key.keyboard.unknown\r\nkey_key.whisper:key.keyboard.unknown\r\nkey_key.mute_microphone:key.keyboard.j\r\nkey_key.disable_voice_chat:key.keyboard.n\r\nkey_key.hide_icons:key.keyboard.h\r\nkey_key.voice_chat:key.keyboard.keypad.subtract\r\nkey_key.voice_chat_settings:key.keyboard.unknown\r\nkey_key.voice_chat_group:key.keyboard.g\r\nkey_key.voice_chat_toggle_recording:key.keyboard.unknown\r\nkey_key.voice_chat_adjust_volumes:key.keyboard.unknown\r\nkey_keybind.name.ESSENTIAL_FRIENDS:key.keyboard.f12\r\nkey_keybind.name.COSMETIC_STUDIO:key.keyboard.b\r\nkey_keybind.name.SCREENSHOT_MANAGER:key.keyboard.i\r\nkey_keybind.name.COSMETICS_VISIBILITY_TOGGLE:key.keyboard.unknown\r\nkey_keybind.name.CHAT_PEEK:key.keyboard.f9\r\nkey_keybind.name.INVITE_FRIENDS:key.keyboard.unknown\r\nkey_keybind.name.MENU_ACCESS:key.keyboard.delete\r\nkey_keybind.name.EMOTE_WHEEL:key.keyboard.f10\r\nkey_keybind.name.EMOTE_SLOT_1:key.keyboard.unknown\r\nkey_keybind.name.EMOTE_SLOT_2:key.keyboard.unknown\r\nkey_keybind.name.EMOTE_SLOT_3:key.keyboard.unknown\r\nkey_keybind.name.EMOTE_SLOT_4:key.keyboard.unknown\r\nkey_keybind.name.EMOTE_SLOT_5:key.keyboard.unknown\r\nkey_keybind.name.EMOTE_SLOT_6:key.keyboard.unknown\r\nkey_keybind.name.EMOTE_SLOT_7:key.keyboard.unknown\r\nkey_keybind.name.EMOTE_SLOT_8:key.keyboard.unknown\r\nkey_keybind.name.ZOOM:key.keyboard.world.2\r\nsoundCategory_master:0.5099337748344371\r\nsoundCategory_music:0.0\r\nsoundCategory_record:0.0\r\nsoundCategory_weather:0.0\r\nsoundCategory_block:1.0\r\nsoundCategory_hostile:1.0\r\nsoundCategory_neutral:1.0\r\nsoundCategory_player:1.0\r\nsoundCategory_ambient:1.0\r\nsoundCategory_voice:1.0\r\nsoundCategory_ui:1.0\r\nmodelPart_cape:true\r\nmodelPart_jacket:true\r\nmodelPart_left_sleeve:true\r\nmodelPart_right_sleeve:true\r\nmodelPart_left_pants_leg:true\r\nmodelPart_right_pants_leg:true\r\nmodelPart_hat:true\r\n",
+  "created": 1771168498028,
+  "expires": 1771773298028,
+  "uses": 8
+}

@@ -1,0 +1,10 @@
+{
+    "handle": "custom_theme",
+    "name": "Custom Theme",
+    "primary": "#7a00f5",
+    "bg": "#1a0033",
+    "surface": "#2d004d",
+    "sidebarGlow": 0.2,
+    "panelOpacity": 0.45,
+    "bgOverlay": 0.6
+}
