@@ -1124,7 +1124,7 @@ app.get('/extensions/:identifier', (req, res) => {
     res.sendFile(path.join(__dirname, 'extension_detail.html'), { headers: { 'Cache-Control': 'no-cache, must-revalidate' } });
 });
 
-codesSystem(app, ADMIN_PASSWORD);
+codesSystem(app, ADMIN_PASSWORD, pool);
 
 if (!fs.existsSync(NEWS_FILE)) {
     fs.writeFileSync(NEWS_FILE, JSON.stringify([], null, 2));

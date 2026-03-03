@@ -201,7 +201,7 @@
                 Customize your MCLC experience with community-created plugins and themes.
             </p>
 
-            <div class="max-w-xl mx-auto relative group">
+            <div class="max-w-xl mx-auto relative group mb-8">
                 <div
                     class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-gray-500 group-focus-within:text-primary transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -211,6 +211,13 @@
                 </div>
                 <input type="text" id="extension-search" placeholder="Search extensions..."
                     class="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-white placeholder-gray-500 focus:outline-none focus:border-primary focus:bg-white/10 focus:shadow-[0_0_20px_rgba(27,217,106,0.2)] transition-all">
+            </div>
+
+            <div class="flex items-center justify-center gap-4">
+                <button id="tab-extension" onclick="setExtensionTab('extension')"
+                    class="px-6 py-2 rounded-xl text-sm font-bold transition-all bg-primary text-black shadow-[0_0_15px_rgba(27,217,106,0.2)]">Extensions</button>
+                <button id="tab-theme" onclick="setExtensionTab('theme')"
+                    class="px-6 py-2 rounded-xl text-sm font-bold transition-all bg-white/5 text-gray-400 hover:text-white hover:bg-white/10">Themes</button>
             </div>
         </div>
     </section>
@@ -281,6 +288,25 @@
             }
         }
         document.addEventListener('DOMContentLoaded', fetchLatestRelease);
+        let currentExtensionTab = 'extension';
+
+        function setExtensionTab(tab) {
+            currentExtensionTab = tab;
+
+            const btnExt = document.getElementById('tab-extension');
+            const btnTheme = document.getElementById('tab-theme');
+
+            if (tab === 'extension') {
+                btnExt.className = 'px-6 py-2 rounded-xl text-sm font-bold transition-all bg-primary text-black shadow-[0_0_15px_rgba(27,217,106,0.2)]';
+                btnTheme.className = 'px-6 py-2 rounded-xl text-sm font-bold transition-all bg-white/5 text-gray-400 hover:text-white hover:bg-white/10';
+            } else {
+                btnTheme.className = 'px-6 py-2 rounded-xl text-sm font-bold transition-all bg-primary text-black shadow-[0_0_15px_rgba(27,217,106,0.2)]';
+                btnExt.className = 'px-6 py-2 rounded-xl text-sm font-bold transition-all bg-white/5 text-gray-400 hover:text-white hover:bg-white/10';
+            }
+
+            loadExtensions(document.getElementById('extension-search').value);
+        }
+
         async function loadExtensions(search = '') {
             console.log('[MCLC] Loading extensions...', search ? `Search: ${search}` : '');
             const grid = document.getElementById('extensions-grid');
@@ -291,18 +317,20 @@
                 const extensions = await response.json();
                 grid.innerHTML = '';
 
-                if (!Array.isArray(extensions) || extensions.length === 0) {
+                const filteredExtensions = Array.isArray(extensions) ? extensions.filter(ext => (ext.type || 'extension') === currentExtensionTab) : [];
+
+                if (filteredExtensions.length === 0) {
                     grid.innerHTML = `
                         <div class="col-span-full text-center text-gray-500 py-20 bg-surface/30 rounded-3xl border border-white/5">
                             <svg class="w-12 h-12 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <p class="text-lg font-medium text-gray-400">${search ? 'No matches found.' : 'No extensions available yet.'}</p>
+                            <p class="text-lg font-medium text-gray-400">${search ? 'No matches found.' : 'No items available yet.'}</p>
                         </div>`;
                     return;
                 }
 
                 const fixPath = (p) => p ? (p.startsWith('http') ? p : `/uploads/${p.replace(/^\/?uploads\//, '')}`) : '/resources/icon.png';
 
-                extensions.forEach((ext, index) => {
+                filteredExtensions.forEach((ext, index) => {
                     const delay = index * 100;
                     const card = document.createElement('div');
                     card.className = 'bg-surface/40 backdrop-blur-md border border-white/5 rounded-[2rem] hover:bg-surface/80 transition-all hover:-translate-y-2 hover:shadow-2xl hover:border-primary/30 group flex flex-col h-full overflow-hidden';

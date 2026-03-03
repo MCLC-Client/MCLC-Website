@@ -3,8 +3,9 @@ const fs = require('fs');
 const path = require('path');
 
 const createTables = async () => {
+    let connection;
     try {
-        const connection = await pool.getConnection();
+        connection = await pool.getConnection();
         await connection.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -84,6 +85,19 @@ const createTables = async () => {
             )
         `);
         console.log('[Database] Notifications table checked/created.');
+
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS modpack_codes (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                code VARCHAR(8) UNIQUE NOT NULL,
+                owner_uuid VARCHAR(100), -- For launcher accounts
+                owner_ip VARCHAR(45), -- For website guests
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX (owner_uuid),
+                INDEX (owner_ip)
+            )
+        `);
+        console.log('[Database] Modpack codes table checked/created.');
         const ensureColumn = async (table, column, definition) => {
             try {
                 const [cols] = await connection.query(`SHOW COLUMNS FROM ${table} LIKE ?`, [column]);

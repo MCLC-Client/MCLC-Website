@@ -10,6 +10,7 @@ const elPackName = document.getElementById('packName');
 const elPackVersion = document.getElementById('packVersion');
 const elPackLoader = document.getElementById('packLoader');
 const elSearchInput = document.getElementById('modSearchInput');
+const elProjectTypeSelect = document.getElementById('projectTypeSelect');
 const elSearchResults = document.getElementById('searchResults');
 const elResultCount = document.getElementById('searchResultCount');
 const elCurrentMods = document.getElementById('currentMods');
@@ -22,8 +23,12 @@ let MODPACK_STATE = {
     name: '',
     version: '1.20.1',
     loader: 'fabric',
-    installedMods: []
+    installedMods: [],
+    resourcePacks: [],
+    shaders: []
 };
+
+let currentSearchType = 'mod';
 
 let currentUser = null;
 let trendingMods = [];
@@ -32,7 +37,7 @@ const modsPerPage = 18;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Modpack Editor [v3]: DOM Loaded, Initializing...');
+    console.log('Modpack Editor [v4]: DOM Loaded, Initializing...');
     console.log('Modpack Editor: Current URL:', window.location.href);
 
     // Safety check for critical elements
@@ -104,13 +109,41 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     }
+
+    // Project Type Selector Listener
+    if (elProjectTypeSelect) {
+        elProjectTypeSelect.addEventListener('change', (e) => {
+            currentSearchType = e.target.value;
+            // Update placeholder text based on type
+            if (elSearchInput) {
+                if (currentSearchType === 'resourcepack') elSearchInput.placeholder = "Search Modrinth for resource packs...";
+                else if (currentSearchType === 'shader') elSearchInput.placeholder = "Search Modrinth for shaders...";
+                else elSearchInput.placeholder = "Search Modrinth for mods...";
+            }
+
+            if (elSearchInput && elSearchInput.value.trim()) {
+                triggerSearch();
+            } else {
+                fetchTrendingMods();
+            }
+        });
+    }
 });
 
 async function fetchTrendingMods() {
     try {
         const ver = MODPACK_STATE.version;
         const loader = MODPACK_STATE.loader;
-        const facetsStr = `[["categories:${loader}"],["versions:${ver}"],["project_type:mod"]]`;
+
+        let categories = `["categories:${loader}"]`;
+        if (currentSearchType === 'resourcepack' || currentSearchType === 'shader') {
+            // Resource packs and shaders usually don't strictly require loader tags on Modrinth in the same way,
+            // but 'minecraft' is a safe category if you want to be broad, or we can omit it. 
+            // Leaving it omitted for broader resourcepack/shader matching across loaders.
+            categories = `[]`;
+        }
+
+        const facetsStr = `[${categories !== `[]` ? categories + ',' : ''}["versions:${ver}"],["project_type:${currentSearchType}"]]`;
         const params = new URLSearchParams({
             limit: 8,
             index: 'downloads',
@@ -216,7 +249,7 @@ async function fetchMinecraftVersions() {
 }
 
 // Modals
-function toggleImportModal() {
+window.toggleImportModal = function toggleImportModal() {
     const modal = document.getElementById('importModal');
     if (modal) {
         modal.classList.toggle('hidden');
@@ -225,7 +258,7 @@ function toggleImportModal() {
     }
 }
 
-function toggleExportModal() {
+window.toggleExportModal = function toggleExportModal() {
     const modal = document.getElementById('exportModal');
     if (modal) {
         modal.classList.toggle('hidden');
@@ -234,7 +267,7 @@ function toggleExportModal() {
     }
 }
 
-function toggleMyModpacks() {
+window.toggleMyModpacks = function toggleMyModpacks() {
     const modal = document.getElementById('draftsModal');
     if (modal) {
         modal.classList.toggle('hidden');
@@ -297,10 +330,15 @@ async function searchModrinth(query) {
     }
 
     try {
+        let categories = `["categories:${MODPACK_STATE.loader}"]`;
+        if (currentSearchType === 'resourcepack' || currentSearchType === 'shader') {
+            categories = `[]`;
+        }
+
         const facets = [
-            `["categories:${MODPACK_STATE.loader}"]`,
+            ...(categories !== `[]` ? [categories] : []),
             `["versions:${MODPACK_STATE.version}"]`,
-            `["project_type:mod"]`
+            `["project_type:${currentSearchType}"]`
         ];
 
         const params = new URLSearchParams({
@@ -383,7 +421,12 @@ function renderSearchResults(hits, isTrending = false) {
 }
 
 function createModCard(mod) {
-    const isAdded = MODPACK_STATE.installedMods.some(m => m.slug === mod.slug);
+    let targetArray;
+    if (currentSearchType === 'resourcepack') targetArray = MODPACK_STATE.resourcePacks;
+    else if (currentSearchType === 'shader') targetArray = MODPACK_STATE.shaders;
+    else targetArray = MODPACK_STATE.installedMods;
+
+    const isAdded = targetArray.some(m => m.slug === mod.slug);
     const card = document.createElement('div');
     card.className = "bg-[#111] border border-white/5 hover:border-white/10 rounded-3xl p-6 flex flex-col gap-5 transition-all hover:scale-[1.02] shadow-xl";
 
@@ -394,7 +437,17 @@ function createModCard(mod) {
 
     const buttonHTML = isAdded
         ? `<button disabled class="bg-white/10 text-gray-500 py-3 rounded-2xl text-sm font-black uppercase tracking-widest w-full cursor-not-allowed border border-white/5 flex items-center justify-center gap-2"><i class="fas fa-check-circle"></i> Installed</button>`
-        : `<button onclick="addMod('${mod.slug}', '${mod.title.replace(/'/g, "\\'")}', '${iconUrl}', '${mod.project_id}')" class="bg-white/5 hover:bg-white/10 text-white py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all w-full border border-white/5 flex items-center justify-center gap-2 group-hover:bg-primary group-hover:text-black group-hover:border-primary"><i class="fas fa-plus-circle"></i> Install</button>`;
+        : `<button onclick="addProject('${mod.slug}', '${mod.title.replace(/'/g, "\\'")}', '${iconUrl}', '${mod.project_id}', '${currentSearchType}')" class="bg-white/5 hover:bg-white/10 text-white py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all w-full border border-white/5 flex items-center justify-center gap-2 group-hover:bg-primary group-hover:text-black group-hover:border-primary"><i class="fas fa-plus-circle"></i> Install</button>`;
+
+    let badgeText = 'Mod';
+    let badgeColor = 'bg-white/5 text-gray-400';
+    if (currentSearchType === 'resourcepack') {
+        badgeText = 'R.Pack';
+        badgeColor = 'bg-amber-500/10 text-amber-500 border-amber-500/20';
+    } else if (currentSearchType === 'shader') {
+        badgeText = 'Shader';
+        badgeColor = 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20';
+    }
 
     card.innerHTML = `
         <div class="flex gap-4 items-start">
@@ -403,7 +456,7 @@ function createModCard(mod) {
                 <h4 class="font-black text-white text-lg leading-tight truncate mb-0.5" title="${mod.title}">${mod.title}</h4>
                 <p class="text-xs text-gray-500 font-bold truncate mb-3" title="${mod.author}">${mod.author}</p>
                 <div class="flex items-center gap-2 mb-2">
-                    <span class="bg-white/5 text-[10px] text-gray-400 px-2 py-0.5 rounded-md font-black uppercase tracking-tighter border border-white/5">Mod</span>
+                    <span class="${badgeColor} text-[10px] px-2 py-0.5 rounded-md font-black uppercase tracking-tighter border border-white/5">${badgeText}</span>
                     <span class="bg-[#0c1a26] text-[#4a90e2] text-[10px] px-2 py-0.5 rounded-md font-black uppercase tracking-tighter border border-[#4a90e2]/20 flex items-center gap-1">
                         <i class="fas fa-chevron-down text-[8px]"></i> ${downloads}
                     </span>
@@ -423,14 +476,20 @@ function createModCard(mod) {
 }
 
 // Pack Management
-function addMod(slug, name, icon, modrinthId) {
-    if (MODPACK_STATE.installedMods.some(m => m.slug === slug)) return;
+window.addProject = function addProject(slug, name, icon, modrinthId, type) {
+    let targetArray;
+    if (type === 'resourcepack') targetArray = MODPACK_STATE.resourcePacks;
+    else if (type === 'shader') targetArray = MODPACK_STATE.shaders;
+    else targetArray = MODPACK_STATE.installedMods;
 
-    MODPACK_STATE.installedMods.push({
+    if (targetArray.some(m => m.slug === slug)) return;
+
+    targetArray.push({
         slug,
         name,
         icon,
-        modrinthId
+        modrinthId,
+        type: type || 'mod'
         // We do not lock specific mod file versions currently, letting the client resolve the latest for the version
     });
 
@@ -439,8 +498,15 @@ function addMod(slug, name, icon, modrinthId) {
     saveDraft();
 }
 
-function removeMod(slug) {
-    MODPACK_STATE.installedMods = MODPACK_STATE.installedMods.filter(m => m.slug !== slug);
+window.removeProject = function removeProject(slug, type) {
+    if (type === 'resourcepack') {
+        MODPACK_STATE.resourcePacks = MODPACK_STATE.resourcePacks.filter(m => m.slug !== slug);
+    } else if (type === 'shader') {
+        MODPACK_STATE.shaders = MODPACK_STATE.shaders.filter(m => m.slug !== slug);
+    } else {
+        MODPACK_STATE.installedMods = MODPACK_STATE.installedMods.filter(m => m.slug !== slug);
+    }
+
     renderPack();
     saveDraft();
 
@@ -451,9 +517,13 @@ function removeMod(slug) {
 }
 
 function renderPack() {
-    if (elModCount) elModCount.innerText = MODPACK_STATE.installedMods.length;
+    const totalProjects = MODPACK_STATE.installedMods.length +
+        MODPACK_STATE.resourcePacks.length +
+        MODPACK_STATE.shaders.length;
 
-    if (MODPACK_STATE.installedMods.length === 0) {
+    if (elModCount) elModCount.innerText = totalProjects;
+
+    if (totalProjects === 0) {
         if (elEmptyState) elEmptyState.style.display = 'flex';
         elCurrentMods.innerHTML = '';
         if (elEmptyState) elCurrentMods.appendChild(elEmptyState);
@@ -464,26 +534,45 @@ function renderPack() {
     if (elEmptyState) elEmptyState.style.display = 'none';
     elCurrentMods.innerHTML = '';
 
+    // Combine all projects for pagination
+    const allProjects = [
+        ...MODPACK_STATE.installedMods.map(m => ({ ...m, displayType: 'mod' })),
+        ...MODPACK_STATE.resourcePacks.map(m => ({ ...m, displayType: 'resourcepack' })),
+        ...MODPACK_STATE.shaders.map(m => ({ ...m, displayType: 'shader' }))
+    ];
+
     // Pagination slicing
     const startIndex = (currentPage - 1) * modsPerPage;
-    const paginatedMods = MODPACK_STATE.installedMods.slice(startIndex, startIndex + modsPerPage);
+    const paginatedMods = allProjects.slice(startIndex, startIndex + modsPerPage);
 
     paginatedMods.forEach(mod => {
         const row = document.createElement('div');
         row.className = "bg-white/5 border border-white/5 rounded-xl p-3 flex items-center justify-between group hover:bg-white/10 transition-colors";
 
+        let badgeText = 'MOD';
+        let badgeColor = 'bg-white/5 text-gray-500';
+        if (mod.displayType === 'resourcepack') {
+            badgeText = 'R.PACK';
+            badgeColor = 'bg-amber-500/10 text-amber-500 border border-amber-500/20';
+        } else if (mod.displayType === 'shader') {
+            badgeText = 'SHADER';
+            badgeColor = 'bg-cyan-500/10 text-cyan-500 border border-cyan-500/20';
+        }
+
         row.innerHTML = `
-            <div class="flex items-center gap-3 overflow-hidden text-left">
-                <img src="${mod.icon}" class="w-8 h-8 rounded-lg object-cover bg-surface" alt="${mod.name}">
+            <div class="flex items-center gap-3 overflow-hidden text-left relative z-10 w-full pr-8">
+                <img src="${mod.icon}" class="w-8 h-8 rounded-lg object-cover bg-surface shrink-0" alt="${mod.name}">
                 <div class="flex flex-col min-w-0">
-                    <span class="font-bold text-sm text-white truncate">${mod.name}</span>
-                    <span class="text-[10px] text-gray-500 font-bold uppercase">modrinth</span>
+                    <span class="font-bold text-sm text-white truncate max-w-[120px]" title="${mod.name}">${mod.name}</span>
+                    <span class="text-[9px] font-black uppercase tracking-widest ${badgeColor} px-1.5 py-0.5 rounded w-fit mt-0.5">${badgeText}</span>
                 </div>
             </div>
-            <button onclick="removeMod('${mod.slug}')" class="text-gray-600 hover:text-red-500 p-2 transition-colors opacity-0 group-hover:opacity-100" title="Remove Mod">
+            <button onclick="removeProject('${mod.slug}', '${mod.displayType}')" class="text-gray-500 hover:text-red-500 p-2 transition-colors absolute right-3 opacity-0 group-hover:opacity-100 z-20 bg-surface/80 rounded-lg" title="Remove">
                 <i class="fas fa-trash-alt"></i>
             </button>
         `;
+        // Make the row relative so the absolute button positions correctly
+        row.classList.add('relative');
         elCurrentMods.appendChild(row);
     });
 
@@ -491,7 +580,10 @@ function renderPack() {
 }
 
 function updatePagination() {
-    const totalPages = Math.ceil(MODPACK_STATE.installedMods.length / modsPerPage) || 1;
+    const totalProjects = MODPACK_STATE.installedMods.length +
+        MODPACK_STATE.resourcePacks.length +
+        MODPACK_STATE.shaders.length;
+    const totalPages = Math.ceil(totalProjects / modsPerPage) || 1;
     if (currentPage > totalPages) currentPage = totalPages;
 
     const elPrev = document.getElementById('prevModPage');
@@ -595,9 +687,13 @@ function loadDrafts() {
 }
 
 // Server Integration
-async function exportModpack() {
-    if (MODPACK_STATE.installedMods.length === 0) {
-        alert("Please add at least one mod to your pack before exporting.");
+window.exportModpack = async function exportModpack() {
+    const totalProjects = MODPACK_STATE.installedMods.length +
+        MODPACK_STATE.resourcePacks.length +
+        MODPACK_STATE.shaders.length;
+
+    if (totalProjects === 0) {
+        alert("Please add at least one mod, resource pack, or shader to your pack before exporting.");
         return;
     }
 
@@ -610,9 +706,9 @@ async function exportModpack() {
             name: MODPACK_STATE.name || 'Web Exported Modpack',
             instanceVersion: MODPACK_STATE.version,
             instanceLoader: MODPACK_STATE.loader,
-            mods: MODPACK_STATE.installedMods.map(m => m.slug), // The client uses string slugs in the mods array
-            resourcePacks: [],
-            shaders: [],
+            mods: MODPACK_STATE.installedMods.map(m => m.slug),
+            resourcePacks: MODPACK_STATE.resourcePacks.map(m => m.slug),
+            shaders: MODPACK_STATE.shaders.map(m => m.slug),
             keybinds: null
         };
 
@@ -642,7 +738,7 @@ async function exportModpack() {
     }
 }
 
-async function importModpack() {
+window.importModpack = async function importModpack() {
     const code = document.getElementById('importCodeInput').value.trim();
     if (!code) return;
 
@@ -664,6 +760,8 @@ async function importModpack() {
             MODPACK_STATE.name = pack.name === 'Exported Modpack' ? '' : pack.name;
             MODPACK_STATE.version = pack.version || pack.instanceVersion || '1.20.1';
             MODPACK_STATE.loader = pack.loader || pack.instanceLoader || 'fabric';
+            MODPACK_STATE.resourcePacks = [];
+            MODPACK_STATE.shaders = [];
 
             // UI Sync
             if (elPackName) elPackName.value = MODPACK_STATE.name;
@@ -674,8 +772,12 @@ async function importModpack() {
             MODPACK_STATE.installedMods = [];
             const rawMods = pack.mods || [];
 
-            // Normalize IDs for API call - handle both string slugs and mod objects
-            const slugsForSearch = rawMods.map(m => {
+            const rawResourcePacks = pack.resourcePacks || [];
+            const rawShaders = pack.shaders || [];
+
+            const allRawProjects = [...rawMods, ...rawResourcePacks, ...rawShaders];
+
+            const slugsForSearch = allRawProjects.map(m => {
                 if (typeof m === 'object' && m !== null) {
                     return m.projectId || m.slug || null;
                 }
@@ -683,57 +785,62 @@ async function importModpack() {
             }).filter(Boolean);
 
             if (slugsForSearch.length > 0) {
-                // To display nicely, we should fetch info from Modrinth for these slugs
                 try {
+                    // Modrinth limits project resolution to chunks, but usually a pack won't overflow a URL string. 
+                    // If it does, chunking would be needed here.
                     const modrinthRes = await fetch(`https://api.modrinth.com/v2/projects?ids=${JSON.stringify(slugsForSearch)}`);
                     if (modrinthRes.ok) {
                         const projects = await modrinthRes.json();
                         slugsForSearch.forEach(slug => {
-                            const p = projects.find(proj => proj.slug === slug || proj.id === slug);
                             if (p) {
-                                MODPACK_STATE.installedMods.push({
+                                const newProject = {
                                     slug: p.slug,
                                     name: p.title,
                                     icon: p.icon_url || 'resources/icon.png',
-                                    modrinthId: p.id
-                                });
+                                    modrinthId: p.id,
+                                    type: p.project_type
+                                };
+
+                                if (p.project_type === 'resourcepack') MODPACK_STATE.resourcePacks.push(newProject);
+                                else if (p.project_type === 'shader') MODPACK_STATE.shaders.push(newProject);
+                                else MODPACK_STATE.installedMods.push(newProject);
+
                             } else {
-                                // Check if we have original data in the rawMods for this slug
-                                const original = rawMods.find(m => (m.projectId === slug || m.slug === slug || m === slug));
-                                if (typeof original === 'object') {
-                                    MODPACK_STATE.installedMods.push({
-                                        slug: original.slug || original.projectId || slug,
-                                        name: original.title || original.name || slug,
-                                        icon: original.icon || original.icon_url || 'resources/icon.png',
-                                        modrinthId: original.projectId || slug
-                                    });
-                                } else {
-                                    // Fallback
-                                    MODPACK_STATE.installedMods.push({
-                                        slug,
-                                        name: slug,
-                                        icon: 'resources/icon.png',
-                                        modrinthId: slug
-                                    });
-                                }
+                                // Fallback checking would happen below
                             }
                         });
                     }
                 } catch (e) {
                     console.warn('Failed to resolve mod details from Modrinth', e);
-                    // Add via fallback
-                    rawMods.forEach(m => {
+                    // Fallback resolution for any unresolved items
+                    const addUnresolved = (list, targetArray) => {
+                        list.forEach(m => {
+                            const slug = typeof m === 'object' ? (m.slug || m.projectId) : m;
+                            const name = typeof m === 'object' ? (m.title || m.name) : m;
+                            const icon = typeof m === 'object' ? (m.icon || m.icon_url) : 'resources/icon.png';
+                            if (!targetArray.some(existing => existing.slug === slug)) {
+                                targetArray.push({ slug, name, icon, modrinthId: slug, type: 'unknown' });
+                            }
+                        });
+                    };
+
+                    addUnresolved(rawMods, MODPACK_STATE.installedMods);
+                    addUnresolved(pack.resourcePacks || [], MODPACK_STATE.resourcePacks);
+                    addUnresolved(pack.shaders || [], MODPACK_STATE.shaders);
+                }
+            } else {
+                // Immediate Fallback if no slugs need Modrinth fetching
+                const addFallbacks = (list, targetArray, defaultType) => {
+                    list.forEach(m => {
                         const slug = typeof m === 'object' ? (m.slug || m.projectId) : m;
                         const name = typeof m === 'object' ? (m.title || m.name) : m;
                         const icon = typeof m === 'object' ? (m.icon || m.icon_url) : 'resources/icon.png';
-                        MODPACK_STATE.installedMods.push({
-                            slug,
-                            name,
-                            icon,
-                            modrinthId: slug
-                        });
+                        targetArray.push({ slug, name, icon, modrinthId: slug, type: defaultType });
                     });
-                }
+                };
+                addFallbacks(rawMods, MODPACK_STATE.installedMods, 'mod');
+                addFallbacks(pack.resourcePacks || [], MODPACK_STATE.resourcePacks, 'resourcepack');
+                addFallbacks(pack.shaders || [], MODPACK_STATE.shaders, 'shader');
             }
 
             saveDraft(); // Save after successful import
@@ -753,6 +860,110 @@ async function importModpack() {
     }
 }
 
+window.toggleMyCodes = function toggleMyCodes() {
+    const modal = document.getElementById('codesModal');
+    if (modal) {
+        modal.classList.toggle('hidden');
+        modal.classList.toggle('flex');
+        document.body.classList.toggle('overflow-hidden');
+        if (modal.classList.contains('flex')) {
+            loadMyCodes();
+        }
+    }
+}
+
+async function loadMyCodes() {
+    const content = document.getElementById('myCodesContent');
+    const limitDisplay = document.getElementById('websiteLimitDisplay');
+    if (!content) return;
+
+    content.innerHTML = `
+        <div class="text-center py-10 text-gray-500">
+            <i class="fas fa-spinner fa-spin text-3xl mb-3 opacity-50"></i>
+            <p>Loading your codes...</p>
+        </div>
+    `;
+
+    try {
+        const res = await fetch('/api/modpack/my-codes');
+        const data = await res.json();
+
+        if (data.success) {
+            if (limitDisplay) limitDisplay.innerHTML = `<span class="text-primary font-black text-sm">${data.codes.length}/5</span>`;
+
+            if (data.codes.length === 0) {
+                content.innerHTML = `
+                    <div class="py-12 text-center text-gray-500">
+                        <i class="fas fa-ghost text-4xl mb-4 opacity-20"></i>
+                        <p class="font-bold">No codes found.</p>
+                        <p class="text-xs uppercase tracking-widest mt-2">Export a modpack to see it here!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            content.innerHTML = '';
+            data.codes.forEach(code => {
+                const item = document.createElement('div');
+                item.className = "bg-white/5 border border-white/5 rounded-2xl p-5 flex items-center justify-between group transition-all hover:bg-white/10";
+
+                const expiresDate = new Date(code.expires).toLocaleDateString();
+
+                item.innerHTML = `
+                    <div class="flex items-center gap-4 flex-grow min-w-0">
+                        <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 shrink-0">
+                            <i class="fas fa-code text-primary"></i>
+                        </div>
+                        <div class="min-w-0 flex-grow">
+                            <div class="flex items-center gap-2">
+                                <h5 class="font-black text-white text-lg tracking-tight">${code.code}</h5>
+                                <span class="bg-white/5 text-[10px] text-gray-500 px-2 py-0.5 rounded font-bold uppercase">${code.uses || 0} Uses</span>
+                            </div>
+                            <p class="text-xs text-gray-400 font-bold truncate">${code.name || 'Unnamed Modpack'}</p>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase mt-1">Expires: ${expiresDate}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="copySpecificCode('${code.code}')" class="p-3 bg-white/5 hover:bg-primary hover:text-black rounded-xl transition-all" title="Copy Code">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button onclick="deleteCode('${code.code}')" class="p-3 bg-white/5 hover:bg-red-500 hover:text-white rounded-xl transition-all" title="Delete Code">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+                content.appendChild(item);
+            });
+        } else {
+            content.innerHTML = `<div class="text-center py-10 text-red-400 font-bold">Error: ${data.error}</div>`;
+        }
+    } catch (e) {
+        content.innerHTML = `<div class="text-center py-10 text-red-400 font-bold">Failed to load codes</div>`;
+    }
+}
+
+function copySpecificCode(code) {
+    navigator.clipboard.writeText(code).then(() => {
+        alert('Code copied: ' + code);
+    });
+}
+
+async function deleteCode(code) {
+    if (!confirm(`Are you sure you want to delete code ${code}? This cannot be undone.`)) return;
+
+    try {
+        const res = await fetch(`/api/modpack/delete/${code}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+            loadMyCodes();
+        } else {
+            alert('Deletion failed: ' + data.error);
+        }
+    } catch (e) {
+        alert('Deletion failed: ' + e.message);
+    }
+}
+
 function saveDraft() {
     if (!currentUser) return; // Only for logged-in users
 
@@ -764,6 +975,8 @@ function saveDraft() {
         version: MODPACK_STATE.version,
         loader: MODPACK_STATE.loader,
         mods: MODPACK_STATE.installedMods,
+        resourcePacks: MODPACK_STATE.resourcePacks,
+        shaders: MODPACK_STATE.shaders,
         updatedAt: new Date().toISOString()
     };
 
@@ -790,14 +1003,16 @@ function restoreDraft(index) {
     const draft = drafts[index];
     if (!draft) return;
 
-    if (MODPACK_STATE.installedMods.length > 0 && !confirm('Discharge current changes and load this draft?')) {
+    if ((MODPACK_STATE.installedMods.length > 0 || MODPACK_STATE.resourcePacks.length > 0 || MODPACK_STATE.shaders.length > 0) && !confirm('Discharge current changes and load this draft?')) {
         return;
     }
 
     MODPACK_STATE.name = draft.name;
     MODPACK_STATE.version = draft.version;
     MODPACK_STATE.loader = draft.loader;
-    MODPACK_STATE.installedMods = draft.mods;
+    MODPACK_STATE.installedMods = draft.mods || [];
+    MODPACK_STATE.resourcePacks = draft.resourcePacks || [];
+    MODPACK_STATE.shaders = draft.shaders || [];
 
     // UI Sync
     if (elPackName) elPackName.value = MODPACK_STATE.name;

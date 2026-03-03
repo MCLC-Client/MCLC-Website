@@ -160,7 +160,7 @@
                         target="_blank">GitHub</a>
                 </div>
 
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-4" id="nav-right-group">
                     <a id="downloadNavBtn" href="#"
                         class="bg-primary hover:bg-primary-dark text-black px-6 py-2.5 rounded-xl font-bold transition-all shadow-primary-glow transform hover:scale-105 active:scale-95 shrink-0 whitespace-nowrap">
                         Download MCLC
@@ -391,6 +391,13 @@
                 const versions = ext.versions || [];
                 const latestVersion = versions.length > 0 ? versions[0] : null;
 
+                const versionSpan = document.getElementById('extension-version');
+                if (latestVersion && versionSpan) {
+                    versionSpan.textContent = latestVersion.version;
+                } else if (versionSpan) {
+                    versionSpan.textContent = "v1.0.0";
+                }
+
                 const downloadBtn = document.getElementById('download-btn');
 
                 if (latestVersion) {
@@ -458,6 +465,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadExtensionData);</script>
+    <script src="/main.js?v=7"></script>
 
 </body>
 

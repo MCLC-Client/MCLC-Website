@@ -529,6 +529,13 @@
                 return;
             }
 
+            // Sort codes by creation date (newest first)
+            codes.sort((a, b) => {
+                const dateA = new Date(a.created || 0);
+                const dateB = new Date(b.created || 0);
+                return dateB - dateA;
+            });
+
             codes.forEach(c => {
                 const tr = document.createElement('tr');
                 const createdDate = c.created ? new Date(c.created).toLocaleString() : '—';
