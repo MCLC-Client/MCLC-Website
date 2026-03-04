@@ -100,7 +100,6 @@
             <div id="tab-dashboard" class="nav-tab active" onclick="switchView('dashboard')">Dashboard</div>
             <div id="tab-list" class="nav-tab" onclick="switchView('list')">News List</div>
             <div id="tab-add" class="nav-tab" onclick="switchView('add')">Add News</div>
-            <div id="tab-announcements" class="nav-tab" onclick="switchView('announcements')">Announcements</div>
             <div id="tab-codes" class="nav-tab" onclick="switchView('codes')">Codes</div>
         </div>
 
@@ -250,34 +249,6 @@
         </div>
 
 
-        <!-- Announcements Section -->
-        <div id="section-announcements" class="view-section">
-            <div class="card" style="max-width: 600px; margin: 0 auto;">
-                <h3 style="margin-bottom:20px; color:var(--primary)">Manage Announcement</h3>
-                <div id="current-announcement"
-                    style="margin-bottom: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; display: none;">
-                    <label style="color:var(--text-muted); font-size:0.8rem; display:block; margin-bottom: 5px;">Current
-                        Announcement:</label>
-                    <p id="announcement-text" style="color: white; margin-bottom: 10px;"></p>
-                    <button onclick="deleteAnnouncement()"
-                        style="background:var(--danger); border:none; color:white; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Remove
-                        Announcement</button>
-                </div>
-
-                <div id="no-announcement">
-                    <p style="color:var(--text-muted); margin-bottom: 15px;">No active announcement. You can create one
-                        below. (Supports & or § for colors)</p>
-                    <form id="announcementForm">
-                        <label
-                            style="color:var(--text-muted); font-size:0.8rem; margin-bottom:5px; display:block;">Announcement
-                            Text</label>
-                        <input type="text" id="announcementInput" placeholder="e.g. &aNew Season &rstarting now! 🚀"
-                            required>
-                        <button type="submit" class="primary" style="margin-top:15px;">PUBLISH ANNOUNCEMENT</button>
-                    </form>
-                </div>
-            </div>
-        </div>
 
 
         <!-- CODES MANAGEMENT -->
@@ -335,73 +306,8 @@
             if (tab) tab.classList.add('active');
 
             if (v === 'codes') loadCodes();
-            if (v === 'announcements') loadAnnouncement();
         }
 
-        // --- Announcement Logic ---
-        async function loadAnnouncement() {
-            try {
-                const res = await fetch('/api/announcement');
-                const data = await res.json();
-
-                const currentDiv = document.getElementById('current-announcement');
-                const noDiv = document.getElementById('no-announcement');
-                const textEl = document.getElementById('announcement-text');
-
-                if (data && data.text) {
-                    textEl.innerText = data.text;
-                    currentDiv.style.display = 'block';
-                    noDiv.style.display = 'none';
-                } else {
-                    currentDiv.style.display = 'none';
-                    noDiv.style.display = 'block';
-                }
-            } catch (e) {
-                console.error('[Announcement] Load error:', e);
-            }
-        }
-
-        document.getElementById('announcementForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const text = document.getElementById('announcementInput').value;
-
-            try {
-                const res = await fetch('/api/announcement', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text, password })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById('announcementInput').value = '';
-                    loadAnnouncement();
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            } catch (err) {
-                alert('Connection error');
-            }
-        });
-
-        async function deleteAnnouncement() {
-            if (!confirm('Remove the current announcement?')) return;
-
-            try {
-                const res = await fetch('/api/announcement', {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    loadAnnouncement();
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            } catch (err) {
-                alert('Connection error');
-            }
-        }
 
         // --- News Logic ---
         let news = [];
@@ -437,17 +343,21 @@
                 return;
             }
 
-            container.innerHTML = news.map((item, index) => `
+            container.innerHTML = news.map((item, index) => {
+                const escapedDescription = escapeHTML(item.description || '');
+                const descriptionWithLinks = escapedDescription.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:var(--secondary)">$1</a>');
+                return `
             <div style="display:flex; gap:15px; padding:15px; border-bottom:1px solid var(--border-light); align-items:center;">
-                <img src="${escapeHTML(item.image) || 'resources/icon.png'}" style="width:80px; height:80px; object-fit:cover; border-radius:8px; background:rgba(0,0,0,0.2);">
+                <img src="${escapeHTML(item.image) || '/resources/icon.png'}" style="width:80px; height:80px; object-fit:cover; border-radius:8px; background:rgba(0,0,0,0.2);">
                 <div style="flex:1;">
                     <h4 style="color:white; margin-bottom:5px;">${escapeHTML(item.title)}</h4>
-                    <p class="description-box">${escapeHTML(item.description || '')}</p>
+                    <p class="description-box" style="-webkit-line-clamp: unset !important; line-clamp: unset !important; max-height: none !important; overflow: visible !important;">${descriptionWithLinks}</p>
                     <small style="color:var(--text-muted);">${escapeHTML(item.date)} ${item.link ? '• <a href="' + escapeHTML(item.link) + '" target="_blank" style="color:var(--secondary)">Link</a>' : ''}</small>
                 </div>
                 <button onclick="removeNews(${index})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:1.2rem;" title="Delete">🗑</button>
             </div>
-        `).join('');
+        `;
+            }).join('');
         }
 
         async function saveNewsData() {
@@ -870,6 +780,7 @@
                 if (fileInput.files.length > 0) {
                     const formData = new FormData();
                     formData.append('image', fileInput.files[0]);
+                    formData.append('password', password);
 
                     try {
                         const uploadRes = await fetch('/api/upload', {

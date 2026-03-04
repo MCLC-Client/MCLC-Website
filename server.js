@@ -69,7 +69,6 @@ if (!ADMIN_PASSWORD) {
 }
 
 const NEWS_FILE = path.join(__dirname, 'news.json');
-const ANNOUNCEMENT_FILE = path.join(__dirname, 'announcements.json');
 const ANALYTICS_FILE = path.join(__dirname, 'analytics.json');
 const downloadCooldowns = new Map();
 
@@ -946,16 +945,27 @@ app.post('/api/admin/extensions/:id/:action', ensureAdmin, async (req, res) => {
     }
 });
 
-app.post('/api/upload', ensureAdmin, upload.single('image'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ success: false, error: 'No file uploaded' });
-    }
+app.post('/api/upload', (req, res) => {
+    upload.single('image')(req, res, (err) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
 
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const fullUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
+        const { password } = req.body;
+        if (password !== ADMIN_PASSWORD) {
+            if (req.file) {
+                const fs = require('fs');
+                try { fs.unlinkSync(req.file.path); } catch (e) { }
+            }
+            return res.status(401).json({ success: false, error: 'Unauthorized' });
+        }
 
-    res.json({ success: true, url: fullUrl });
+        if (!req.file) return res.status(400).json({ success: false, error: 'No file uploaded' });
+
+        const protocol = req.protocol;
+        const host = req.get('host');
+        const fullUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
+
+        res.json({ success: true, url: fullUrl });
+    });
 });
 
 app.get('/news.json', (req, res) => {
@@ -994,45 +1004,6 @@ app.post('/api/news', (req, res) => {
     } catch (err) {
         console.error(`[News] Write error:`, err);
         res.status(500).json({ success: false, error: 'Failed to write news: ' + err.message });
-    }
-});
-
-// --- ANNOUNCEMENT ROUTES ---
-app.get('/api/announcement', (req, res) => {
-    try {
-        const announcements = getAnnouncements();
-        res.json(announcements.length > 0 ? announcements[0] : {});
-    } catch (err) {
-        res.json({});
-    }
-});
-
-app.post('/api/announcement', (req, res) => {
-    const { text, password } = req.body;
-    if (password !== ADMIN_PASSWORD) {
-        return res.status(401).json({ success: false, error: 'Unauthorized' });
-    }
-
-    try {
-        const newAnnouncement = { text, date: new Date().toISOString() };
-        saveAnnouncements([newAnnouncement]);
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
-    }
-});
-
-app.delete('/api/announcement', (req, res) => {
-    const { password } = req.body;
-    if (password !== ADMIN_PASSWORD) {
-        return res.status(401).json({ success: false, error: 'Unauthorized' });
-    }
-
-    try {
-        saveAnnouncements([]);
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
     }
 });
 
@@ -1132,19 +1103,6 @@ if (!fs.existsSync(NEWS_FILE)) {
 
 const getNews = () => JSON.parse(fs.readFileSync(NEWS_FILE, 'utf8'));
 const saveNews = (data) => fs.writeFileSync(NEWS_FILE, JSON.stringify(data, null, 2));
-
-if (!fs.existsSync(ANNOUNCEMENT_FILE)) {
-    fs.writeFileSync(ANNOUNCEMENT_FILE, JSON.stringify([], null, 2));
-}
-
-const getAnnouncements = () => {
-    try {
-        return JSON.parse(fs.readFileSync(ANNOUNCEMENT_FILE, 'utf8'));
-    } catch (e) {
-        return [];
-    }
-};
-const saveAnnouncements = (data) => fs.writeFileSync(ANNOUNCEMENT_FILE, JSON.stringify(data, null, 2));
 
 app.post('/api/analytics', (req, res) => {
     if (req.body.password !== ADMIN_PASSWORD) return res.status(401).json({ error: 'Unauthorized' });

@@ -371,7 +371,7 @@
                 document.getElementById('downloads-count').textContent = (ext.downloads || 0).toLocaleString();
                 document.getElementById('release-date').textContent = new Date(ext.created_at).toLocaleDateString('de-DE');
                 document.getElementById('update-date').textContent = new Date(ext.updated_at || ext.created_at).toLocaleDateString('de-DE');
-                const fixPath = (p) => p ? (p.startsWith('http') ? p : `/uploads/${p.replace(/^\/?uploads\//, '')}`) : 'resources/icon.png';
+                const fixPath = (p) => p ? (p.startsWith('http') ? p : `/uploads/${p.replace(/^\/?uploads\//, '')}`) : '/resources/icon.png';
 
                 document.getElementById('dev-name').textContent = ext.developer || 'Anonym';
                 document.getElementById('dev-link').href = `/user.html?u=${ext.developer}`;

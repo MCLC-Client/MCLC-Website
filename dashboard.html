@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCLC - Dashboard</title>
-    <link rel="icon" type="image/png" href="resources/icon.png">
+    <link rel="icon" type="image/png" href="/resources/icon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -38,7 +38,7 @@
         id="navbar">
         <div class="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-20">
             <a href="index.html" class="flex items-center gap-3">
-                <img src="resources/icon.png" alt="MCLC Logo" class="w-8 h-8 object-contain">
+                <img src="/resources/icon.png" alt="MCLC Logo" class="w-8 h-8 object-contain">
                 <span class="text-xl font-bold tracking-tighter text-white">MCLC <span
                         class="text-primary/50 text-xs ml-1 uppercase tracking-widest">Dashboard</span></span>
             </a>
@@ -88,7 +88,7 @@
                     <div
                         class="absolute inset-0 bg-primary/20 blur-xl rounded-full group-hover:bg-primary/30 transition-all">
                     </div>
-                    <img id="profile-avatar" src="resources/icon.png"
+                    <img id="profile-avatar" src="/resources/icon.png"
                         class="relative w-24 h-24 rounded-full border-2 border-white/10 shadow-2xl mb-4 object-cover">
                 </div>
                 <div id="profile-name" class="text-xl font-bold text-white tracking-tight">User</div>
@@ -169,7 +169,7 @@
                     <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-3xl rounded-full -mr-32 -mt-32">
                     </div>
                     <div class="relative z-10 flex flex-col md:flex-row items-center gap-10">
-                        <img id="home-avatar" src="resources/icon.png"
+                        <img id="home-avatar" src="/resources/icon.png"
                             class="w-32 h-32 rounded-full border-4 border-surface shadow-2xl object-cover">
                         <div>
                             <h1 class="text-5xl font-black text-white mb-2 tracking-tight">Welcome, <span
@@ -693,7 +693,7 @@
     <script>        let currentUser = null;
         let myExtensions = [];
         let currentExtensionId = null;
-        const fixPath = (p) => p ? (p.startsWith('http') ? p : `/uploads/${p.replace(/^\/?uploads\//, '')}`) : 'resources/icon.png';
+        const fixPath = (p) => p ? (p.startsWith('http') ? p : `/uploads/${p.replace(/^\/?uploads\//, '')}`) : '/resources/icon.png';
 
         async function markAsRead(id, e) {
             if (e) e.stopPropagation();
