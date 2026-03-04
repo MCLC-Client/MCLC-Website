@@ -287,7 +287,46 @@
                         </div>
                     </form>
                 </div>
+
+                <!-- Danger Zone -->
+                <div class="mt-8 bg-red-500/5 border border-red-500/20 p-10 rounded-[2.5rem] relative overflow-hidden">
+                    <h3 class="text-2xl font-black text-red-500 mb-2">Danger Zone</h3>
+                    <p class="text-red-500/70 text-sm mb-6 leading-relaxed font-bold">
+                        Permanently delete your account and all your uploaded projects. This action cannot be undone.
+                    </p>
+                    <button type="button" onclick="openDeleteAccountModal()"
+                        class="bg-red-500 hover:bg-red-600 text-black px-10 py-4 rounded-2xl font-black transition-all">
+                        Delete Account
+                    </button>
+                </div>
             </section>
+
+            <!-- Account Delete Modal -->
+            <div id="account-delete-modal"
+                class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm p-6">
+                <div
+                    class="bg-surface/90 border border-red-500/30 p-10 rounded-[2.5rem] shadow-2xl max-w-lg w-full relative animate-in zoom-in-95 duration-300">
+                    <h2 class="text-2xl font-black text-white mb-4">Delete Account?</h2>
+                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                        This action is permanent and will delete all your extensions and themes. To confirm, please type
+                        <span class="text-red-500 font-mono font-bold">delete my account</span> below.
+                    </p>
+
+                    <input type="text" id="account-delete-confirm-input"
+                        class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-red-500/50 outline-none transition-all placeholder:text-gray-700 font-mono text-sm mb-6"
+                        placeholder="delete my account">
+
+                    <div class="flex gap-4">
+                        <button type="button" onclick="closeDeleteAccountModal()"
+                            class="flex-1 px-6 py-4 rounded-2xl bg-white/5 text-gray-400 hover:text-white font-bold transition-all">Cancel</button>
+                        <button type="button" id="account-delete-confirm-btn" disabled onclick="executeAccountDelete()"
+                            class="flex-1 px-6 py-4 rounded-2xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white font-bold transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                            Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <section id="tab-analytics"
                 class="tab-content hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <h2 class="text-4xl font-black text-white mb-10 tracking-tight">Statistics Overview</h2>
@@ -724,7 +763,7 @@
         </div>
     </div>
 
-    <script src="main.js?v=5"></script>
+    <script src="main.js?v=8"></script>
     <script>        let currentUser = null;
         let myExtensions = [];
         let currentExtensionId = null;
@@ -1391,6 +1430,42 @@
                 alert('An error occurred during deletion.');
             } finally {
                 btn.innerHTML = originalText;
+            }
+        }
+
+        function openDeleteAccountModal() {
+            document.getElementById('account-delete-confirm-input').value = "";
+            document.getElementById('account-delete-confirm-btn').disabled = true;
+            document.getElementById('account-delete-modal').classList.remove('hidden');
+            const input = document.getElementById('account-delete-confirm-input');
+            input.oninput = () => {
+                document.getElementById('account-delete-confirm-btn').disabled = input.value !== "delete my account";
+            };
+        }
+
+        function closeDeleteAccountModal() {
+            document.getElementById('account-delete-modal').classList.add('hidden');
+        }
+
+        async function executeAccountDelete() {
+            const btn = document.getElementById('account-delete-confirm-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Deleting Account...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/user/delete`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    window.location.href = '/?deleted=true';
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (err) {
+                alert('An error occurred during account deletion.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
         }
         document.getElementById('versionForm').addEventListener('submit', async (e) => {

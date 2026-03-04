@@ -52,7 +52,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Check auth for drafts
     console.log('Modpack Editor: Checking auth state...');
     try {
-        const res = await fetch('/api/user');
+        const res = await fetch('/api/user?_cb=' + Date.now());
+        if (res.status === 503) {
+            window.location.href = '/maintenance.html';
+            return;
+        }
         if (res.ok) {
             const data = await res.json();
             console.log('Modpack Editor: Auth response:', data);

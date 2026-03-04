@@ -102,6 +102,47 @@ app.use(passport.session());
 
 const activeSessions = new Map();
 
+let isMaintenanceMode = false;
+
+// --- MAINTENANCE MIDDLEWARE ---
+app.use((req, res, next) => {
+    const isMaintenancePath = req.path === '/maintenance.html' || req.path === '/api/admin/maintenance/auth';
+    const isResource = req.path.startsWith('/resources/') || req.path.startsWith('/style.css') || req.path.startsWith('/uploads/');
+    const isLocalExempt = req.path.startsWith('/socket.io');
+
+    if (isMaintenanceMode && !req.session?.adminBypass && !isMaintenancePath && !isResource && !isLocalExempt) {
+        if (req.path.startsWith('/api/')) return res.status(503).json({ error: 'System under maintenance' });
+        return res.redirect('/maintenance.html');
+    }
+
+    if (!isMaintenanceMode && req.path === '/maintenance.html') {
+        return res.redirect('/');
+    }
+    next();
+});
+
+app.post('/api/admin/maintenance/auth', (req, res) => {
+    if (req.body.password === ADMIN_PASSWORD) {
+        req.session.adminBypass = true;
+        return res.json({ success: true });
+    }
+    return res.status(401).json({ error: 'Invalid password' });
+});
+
+app.post('/api/admin/maintenance/toggle', (req, res) => {
+    if (req.body.password === ADMIN_PASSWORD) {
+        isMaintenanceMode = !isMaintenanceMode;
+        // Removed auto-bypass so the admin can test the maintenance page
+        console.log(`[Maintenance] Mode is now ${isMaintenanceMode ? 'ON' : 'OFF'}`);
+        return res.json({ success: true, isMaintenanceMode });
+    }
+    return res.status(401).json({ error: 'Unauthorized' });
+});
+
+app.get('/api/admin/maintenance/status', (req, res) => {
+    res.json({ isMaintenanceMode });
+});
+
 let stats = {
     downloads: {
         mod: {},
@@ -713,6 +754,55 @@ app.post('/api/user/update', ensureAuthenticated, upload.single('avatarFile'), a
     } catch (err) {
         console.error('[API Error] /api/user/update failed:', err);
         res.status(500).json({ error: 'Failed to update profile' });
+    }
+});
+
+app.delete('/api/user/delete', ensureAuthenticated, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        console.log(`[MCLC] Account deletion requested by user ID: ${userId} (${req.user.username})`);
+
+        // Delete uploaded files for this user's extensions
+        const [extensions] = await pool.query('SELECT id, banner_path FROM extensions WHERE user_id = ?', [userId]);
+        const [versions] = await pool.query(
+            'SELECT ev.file_path FROM extension_versions ev JOIN extensions e ON ev.extension_id = e.id WHERE e.user_id = ?',
+            [userId]
+        );
+
+        const fs = require('fs');
+        const path = require('path');
+        const uploadsDir = path.join(__dirname, 'uploads');
+
+        // Clean up version files
+        for (const v of versions) {
+            if (v.file_path) {
+                const filePath = path.join(uploadsDir, v.file_path);
+                try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
+            }
+        }
+
+        // Clean up banner files
+        for (const ext of extensions) {
+            if (ext.banner_path) {
+                const bannerPath = path.join(uploadsDir, ext.banner_path);
+                try { if (fs.existsSync(bannerPath)) fs.unlinkSync(bannerPath); } catch (e) { /* ignore */ }
+            }
+        }
+
+        // Delete user (CASCADE handles extensions, versions, notifications, drafts)
+        await pool.query('DELETE FROM users WHERE id = ?', [userId]);
+
+        // Destroy session
+        req.logout((err) => {
+            req.session.destroy(() => {
+                res.json({ success: true });
+            });
+        });
+
+        console.log(`[MCLC] Account deleted successfully: user ID ${userId}`);
+    } catch (err) {
+        console.error('[API Error] /api/user/delete failed:', err);
+        res.status(500).json({ error: 'Failed to delete account', details: err.message });
     }
 });
 

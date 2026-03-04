@@ -59,7 +59,12 @@ async function checkAuth() {
 
     let data = { loggedIn: false };
     try {
-        const res = await fetch('/api/user');
+        // Use a cache buster to ensure Cloudflare doesn't serve a cached "200 OK" when backend is actually 503
+        const res = await fetch('/api/user?_cb=' + Date.now());
+        if (res.status === 503) {
+            window.location.href = '/maintenance.html';
+            return;
+        }
         if (res.ok) {
             data = await res.json();
         }

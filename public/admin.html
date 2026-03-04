@@ -88,6 +88,10 @@
                     style="background:#e74c3c !important; border-color:#e74c3c !important; color:white !important; position: relative !important; left: auto !important; right: auto !important; top: auto !important; display: inline-block !important; width: auto !important;">
                     RESET DATA
                 </button>
+                <button id="btn-toggle-maintenance" onclick="toggleMaintenance()"
+                    style="background:#f39c12 !important; border-color:#f39c12 !important; color:white !important; position: relative !important; left: auto !important; right: auto !important; top: auto !important; display: inline-block !important; width: auto !important;">
+                    MAINTENANCE: OFF
+                </button>
                 <button onclick="logout()"
                     style="background:rgba(255,255,255,0.1) !important; border: 1px solid rgba(255,255,255,0.2) !important; color:white !important; position: relative !important; left: auto !important; right: auto !important; top: auto !important; display: inline-block !important; width: auto !important;">
                     LOGOUT
@@ -409,6 +413,46 @@
                 alert('Connection error while resetting data.');
             }
         }
+
+        // --- MAINTENANCE LOGIC ---
+        async function toggleMaintenance() {
+            if (!confirm('Are you sure you want to toggle maintenance mode?')) return;
+            try {
+                const res = await fetch('/api/admin/maintenance/toggle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    updateMaintenanceButton(data.isMaintenanceMode);
+                } else {
+                    alert('Failed to toggle maintenance mode: ' + (data.error || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error while toggling maintenance mode.');
+            }
+        }
+
+        function updateMaintenanceButton(isMaintenanceMode) {
+            const btn = document.getElementById('btn-toggle-maintenance');
+            if (!btn) return;
+            if (isMaintenanceMode) {
+                btn.innerText = 'MAINTENANCE: ON (CLICK TO DISABLE)';
+                btn.style.setProperty('background', '#e74c3c', 'important');
+                btn.style.setProperty('border-color', '#e74c3c', 'important');
+            } else {
+                btn.innerText = 'MAINTENANCE: OFF (CLICK TO ENABLE)';
+                btn.style.setProperty('background', '#f39c12', 'important');
+                btn.style.setProperty('border-color', '#f39c12', 'important');
+            }
+        }
+
+        // Fetch initial status
+        fetch('/api/admin/maintenance/status').then(r => r.json()).then(data => {
+            updateMaintenanceButton(data.isMaintenanceMode);
+        }).catch(e => console.error(e));
 
         // --- CODES LOGIC ---
         async function loadCodes() {
