@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -33,7 +34,7 @@ const multer = require('multer');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const passport = require('passport');
-require('dotenv').config();
+// dotenv already required at top
 
 const pool = require('./database');
 const http = require('http');

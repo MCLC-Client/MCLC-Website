@@ -20,6 +20,11 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
+console.log('[Passport] GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'Set' : 'MISSING');
+if (!process.env.GOOGLE_CLIENT_ID) {
+    console.error('[Passport] CRITICAL: GOOGLE_CLIENT_ID is not set in environment variables!');
+}
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
