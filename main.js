@@ -23,7 +23,7 @@ function handleScroll() {
 }
 window.addEventListener('scroll', handleScroll);
 handleScroll(); // Initial check
-window.fixPath = (p) => p ? (p.startsWith('http') ? p : `/uploads/${p.replace(/^\/?uploads\//, '')}`) : '/resources/icon.png';
+window.fixPath = (p) => p ? (p.startsWith('http') ? p : `/uploads/${p.replace(/^\/?uploads\//, '')}`) : '/resources/lux_icon.png?v=3';
 const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {

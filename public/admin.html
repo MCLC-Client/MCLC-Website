@@ -352,7 +352,7 @@
                 const descriptionWithLinks = escapedDescription.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:var(--secondary)">$1</a>');
                 return `
             <div style="display:flex; gap:15px; padding:15px; border-bottom:1px solid var(--border-light); align-items:center;">
-                <img src="${escapeHTML(item.image) || '/resources/icon.png'}" style="width:80px; height:80px; object-fit:cover; border-radius:8px; background:rgba(0,0,0,0.2);">
+                <img src="${escapeHTML(item.image) || '/resources/lux_icon.png?v=3'}" style="width:80px; height:80px; object-fit:cover; border-radius:8px; background:rgba(0,0,0,0.2);">
                 <div style="flex:1;">
                     <h4 style="color:white; margin-bottom:5px;">${escapeHTML(item.title)}</h4>
                     <p class="description-box" style="-webkit-line-clamp: unset !important; line-clamp: unset !important; max-height: none !important; overflow: visible !important;">${descriptionWithLinks}</p>

@@ -79,7 +79,7 @@
       "versionId": "YAjCkZ29",
       "fileName": "appleskin-fabric-mc1.21.6-3.0.6.jar",
       "title": "AppleSkin",
-      "icon": "https://cdn.modrinth.com/data/EsAfCjCV/icon.png"
+      "icon": "https://cdn.modrinth.com/data/EsAfCjCV/lux_icon.png"
     },
     {
       "projectId": "9s6osm5g",
@@ -100,7 +100,7 @@
       "versionId": "g58ofrov",
       "fileName": "fabric-api-0.136.1+1.21.8.jar",
       "title": "Fabric API",
-      "icon": "https://cdn.modrinth.com/data/P7dR8mSH/icon.png"
+      "icon": "https://cdn.modrinth.com/data/P7dR8mSH/lux_icon.png"
     },
     {
       "projectId": "g4pR0Fmy",
@@ -189,7 +189,7 @@
       "versionId": "NolGXq9F",
       "fileName": "voicechat-fabric-1.21.8-2.6.12.jar",
       "title": "Simple Voice Chat",
-      "icon": "https://cdn.modrinth.com/data/9eGKb6K1/icon.png"
+      "icon": "https://cdn.modrinth.com/data/9eGKb6K1/lux_icon.png"
     }
   ],
   "resourcePacks": [

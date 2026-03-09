@@ -434,7 +434,7 @@ function createModCard(mod) {
     const card = document.createElement('div');
     card.className = "bg-[#111] border border-white/5 hover:border-white/10 rounded-3xl p-6 flex flex-col gap-5 transition-all hover:scale-[1.02] shadow-xl";
 
-    const iconUrl = mod.icon_url || 'resources/icon.png';
+    const iconUrl = mod.icon_url || 'resources/lux_icon.png?v=3';
     const downloads = mod.downloads > 1000000
         ? (mod.downloads / 1000000).toFixed(1) + 'M'
         : (mod.downloads / 1000).toFixed(1) + 'K';
@@ -800,7 +800,7 @@ window.importModpack = async function importModpack() {
                                 const newProject = {
                                     slug: p.slug,
                                     name: p.title,
-                                    icon: p.icon_url || 'resources/icon.png',
+                                    icon: p.icon_url || 'resources/lux_icon.png?v=3',
                                     modrinthId: p.id,
                                     type: p.project_type
                                 };
@@ -821,7 +821,7 @@ window.importModpack = async function importModpack() {
                         list.forEach(m => {
                             const slug = typeof m === 'object' ? (m.slug || m.projectId) : m;
                             const name = typeof m === 'object' ? (m.title || m.name) : m;
-                            const icon = typeof m === 'object' ? (m.icon || m.icon_url) : 'resources/icon.png';
+                            const icon = typeof m === 'object' ? (m.icon || m.icon_url) : 'resources/lux_icon.png?v=3';
                             if (!targetArray.some(existing => existing.slug === slug)) {
                                 targetArray.push({ slug, name, icon, modrinthId: slug, type: 'unknown' });
                             }
@@ -838,7 +838,7 @@ window.importModpack = async function importModpack() {
                     list.forEach(m => {
                         const slug = typeof m === 'object' ? (m.slug || m.projectId) : m;
                         const name = typeof m === 'object' ? (m.title || m.name) : m;
-                        const icon = typeof m === 'object' ? (m.icon || m.icon_url) : 'resources/icon.png';
+                        const icon = typeof m === 'object' ? (m.icon || m.icon_url) : 'resources/lux_icon.png?v=3';
                         targetArray.push({ slug, name, icon, modrinthId: slug, type: defaultType });
                     });
                 };
