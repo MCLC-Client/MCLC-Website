@@ -138,10 +138,7 @@
             <li><a href="#structure" class="wiki-nav-link block active">File Structure</a></li>
             <li><a href="#manifest" class="wiki-nav-link block">manifest.json</a></li>
             <li><a href="#mainjs" class="wiki-nav-link block">main.js Hooks</a></li>
-            <li><a href="#hooks" class="wiki-nav-link block">Hook System</a></li>
-            <li><a href="#styles" class="wiki-nav-link block">Style Injection</a></li>
-            <li><a href="#slots" class="wiki-nav-link block">UI Slots</a></li>
-            <li><a href="#api" class="wiki-nav-link block">Extension API Reference</a></li>
+            <li><a href="#api" class="wiki-nav-link block">Extension API</a></li>
             <li><a href="#packaging" class="wiki-nav-link block">Packaging</a></li>
             <li><a href="#troubleshooting" class="wiki-nav-link block">Troubleshooting</a></li>
           </ul>
@@ -224,93 +221,23 @@ exports.activate = async (api) => {
                     </pre>
         </section>
 
-        <section id="hooks" class="mb-20">
-          <h2 class="text-3xl font-extrabold text-white mb-8 flex items-center gap-4">
-            <span class="text-primary">#</span> 4. Hook System
-          </h2>
-          <p class="mb-6 text-gray-400">Hooks allow your extension to react to application events or modify data before
-            it's used.</p>
-          <pre
-            class="bg-surface border border-white/5 rounded-2xl p-6 text-green-300 font-mono text-sm overflow-x-auto">
-<code>/* Example Hooks */
-exports.activate = async (api) => {
-    // Modify search results
-    api.hooks.register('search:results', (results) => {
-        return results.map(r => ({...r, title: "[MODDED] " + r.title}));
-    });
-};</code>
-                    </pre>
-        </section>
-
-        <section id="styles" class="mb-20">
-          <h2 class="text-3xl font-extrabold text-white mb-8 flex items-center gap-4">
-            <span class="text-primary">#</span> 5. Style Injection
-          </h2>
-          <p class="mb-6 text-gray-400">Inject custom CSS directly into the launcher to change its appearance.</p>
-          <pre class="bg-surface border border-white/5 rounded-2xl p-6 text-pink-300 font-mono text-sm overflow-x-auto">
-<code>/* Example CSS Injection */
-api.ui.injectStyle(`
-    .bg-sidebar { background: #1a1a2e !important; }
-    .text-primary { color: #ff0055 !important; }
-`);</code>
-                    </pre>
-        </section>
-
-        <section id="slots" class="mb-20">
-          <h2 class="text-3xl font-extrabold text-white mb-8 flex items-center gap-4">
-            <span class="text-primary">#</span> 6. UI Slots
-          </h2>
-          <p class="mb-6 text-gray-400">Lux Client provides several slots where you can inject your own UI components.
-          </p>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-surface/30 p-4 rounded-xl border border-white/5">
-              <span class="text-primary font-mono text-xs">sidebar.top</span>
-              <p class="text-[10px] text-gray-500">Above the navigation menu</p>
-            </div>
-            <div class="bg-surface/30 p-4 rounded-xl border border-white/5">
-              <span class="text-primary font-mono text-xs">sidebar.bottom</span>
-              <p class="text-[10px] text-gray-500">Below the settings button</p>
-            </div>
-            <div class="bg-surface/30 p-4 rounded-xl border border-white/5">
-              <span class="text-primary font-mono text-xs">home.top</span>
-              <p class="text-[10px] text-gray-500">Dashboard top area</p>
-            </div>
-            <div class="bg-surface/30 p-4 rounded-xl border border-white/5">
-              <span class="text-primary font-mono text-xs">header.right</span>
-              <p class="text-[10px] text-gray-500">Top bar (right side)</p>
-            </div>
-            <div class="bg-surface/30 p-4 rounded-xl border border-white/5">
-              <span class="text-primary font-mono text-xs">settings.bottom</span>
-              <p class="text-[10px] text-gray-500">Settings page footer</p>
-            </div>
-          </div>
-        </section>
-
         <section id="api" class="mb-20">
           <h2 class="text-3xl font-extrabold text-white mb-8 flex items-center gap-4">
-            <span class="text-primary">#</span> 7. Extension API Reference
+            <span class="text-primary">#</span> 4. Extension API
           </h2>
           <div class="space-y-6">
             <div class="bg-surface/20 border border-white/5 p-6 rounded-2xl">
               <h4 class="text-white font-bold mb-3">api.ui</h4>
               <ul class="text-sm text-gray-400 space-y-2">
                 <li><code class="text-primary">toast(message, type)</code> - Show a notification</li>
-                <li><code class="text-primary">registerView(slot, component)</code> - Add UI to a slot</li>
-                <li><code class="text-primary">injectStyle(css)</code> - Add custom CSS</li>
+                <li><code class="text-primary">registerView(slot, component)</code> - Add UI to the launcher</li>
               </ul>
             </div>
             <div class="bg-surface/20 border border-white/5 p-6 rounded-2xl">
-              <h4 class="text-white font-bold mb-3">api.hooks</h4>
+              <h4 class="text-white font-bold mb-3">api.storage</h4>
               <ul class="text-sm text-gray-400 space-y-2">
-                <li><code class="text-primary">register(name, fn)</code> - Attach to a system hook</li>
-                <li><code class="text-primary">run(name, ...args)</code> - Trigger a custom hook</li>
-              </ul>
-            </div>
-            <div class="bg-surface/20 border border-white/5 p-6 rounded-2xl">
-              <h4 class="text-white font-bold mb-3">api.launcher (Backend Only)</h4>
-              <ul class="text-sm text-gray-400 space-y-2">
-                <li><code class="text-primary">getInstances()</code> - Return list of instances</li>
-                <li><code class="text-primary">launch(name)</code> - Start a game instance</li>
+                <li><code class="text-primary">get(key)</code> - Retrieve stored data</li>
+                <li><code class="text-primary">set(key, value)</code> - Save data persistently</li>
               </ul>
             </div>
           </div>
@@ -350,10 +277,7 @@ api.ui.injectStyle(`
         <a href="#structure" class="block hover:text-white transition-colors">File Structure</a>
         <a href="#manifest" class="block hover:text-white transition-colors">manifest.json</a>
         <a href="#mainjs" class="block hover:text-white transition-colors">main.js Hooks</a>
-        <a href="#hooks" class="block hover:text-white transition-colors">Hook System</a>
-        <a href="#styles" class="block hover:text-white transition-colors">Style Injection</a>
-        <a href="#slots" class="block hover:text-white transition-colors">UI Slots</a>
-        <a href="#api" class="block hover:text-white transition-colors">Extension API Reference</a>
+        <a href="#api" class="block hover:text-white transition-colors">Extension API</a>
         <a href="#packaging" class="block hover:text-white transition-colors">Packaging</a>
       </nav>
     </aside>

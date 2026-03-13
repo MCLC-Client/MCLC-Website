@@ -1,14 +1,14 @@
 # MCLC Installer Script for Windows
 # Run with: iwr https://mclc.pluginhub.de/install.ps1 | iex
 
-$repo = "MCLC-Client/MCLC-Client"
+$repo = "Lux-Client/LuxClient"
 $baseUrl = "https://github.com/$repo/releases/latest/download"
-$filename = "MCLC-setup.exe"
+$filename = "Lux-setup.exe"
 $url = "$baseUrl/$filename"
 $tempPath = [System.IO.Path]::GetTempFileName() + ".exe"
 
-Write-Host "--- MCLC Installer ---" -ForegroundColor Cyan
-Write-Host "Downloading MCLC from $url..."
+Write-Host "--- Lux Installer ---" -ForegroundColor Cyan
+Write-Host "Downloading Lux from $url..."
 
 try {
     Invoke-WebRequest -Uri $url -OutFile $tempPath -ErrorAction Stop
