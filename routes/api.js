@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const pool = require('../database');
 const upload = require('../middleware/upload');
@@ -143,3 +143,4 @@ router.post('/admin/extensions/:id/reject', ensureAdmin, async (req, res) => {
 });
 
 module.exports = router;
+

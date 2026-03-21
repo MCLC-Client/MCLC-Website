@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -107,16 +107,16 @@ let isMaintenanceMode = false;
 
 // --- MAINTENANCE MIDDLEWARE ---
 app.use((req, res, next) => {
-    const isMaintenancePath = req.path === '/maintenance.html' || req.path === '/api/admin/maintenance/auth';
-    const isResource = req.path.startsWith('/resources/') || req.path.startsWith('/style.css') || req.path.startsWith('/uploads/');
+    const isMaintenancePath = req.path === '/html/public/maintenance.html' || req.path === '/maintenance.html' || req.path === '/api/admin/maintenance/auth';
+    const isResource = req.path.startsWith('/resources/') || req.path.startsWith('/css/') || req.path.startsWith('/js/') || req.path.startsWith('/uploads/');
     const isLocalExempt = req.path.startsWith('/socket.io');
 
     if (isMaintenanceMode && !req.session?.adminBypass && !isMaintenancePath && !isResource && !isLocalExempt) {
         if (req.path.startsWith('/api/')) return res.status(503).json({ error: 'System under maintenance' });
-        return res.redirect('/maintenance.html');
+        return res.redirect('/html/public/maintenance.html');
     }
 
-    if (!isMaintenanceMode && req.path === '/maintenance.html') {
+    if (!isMaintenanceMode && (req.path === '/maintenance.html' || req.path === '/html/public/maintenance.html')) {
         return res.redirect('/');
     }
     next();
@@ -1145,11 +1145,17 @@ const websitePath = fs.existsSync(path.join(__dirname, 'website'))
 const adminPublicPath = fs.existsSync(path.join(__dirname, 'public'))
     ? path.join(__dirname, 'public')
     : path.join(__dirname, 'news-admin/public');
+const htmlPath = path.resolve(__dirname, 'html');
+const cssPath = path.resolve(__dirname, 'css');
+const jsPath = path.resolve(__dirname, 'js');
 
 const uploadPath = path.resolve(__dirname, 'public/uploads');
 
 console.log(`[Static] Serving website from: ${path.resolve(websitePath)}`);
 console.log(`[Static] Serving admin from: ${path.resolve(adminPublicPath)}`);
+console.log(`[Static] Serving html from: ${htmlPath}`);
+console.log(`[Static] Serving css from: ${cssPath}`);
+console.log(`[Static] Serving js from: ${jsPath}`);
 console.log(`[Static] Serving uploads from: ${uploadPath}`);
 
 const staticOptions = {
@@ -1175,11 +1181,47 @@ app.use('/uploads', express.static(uploadPath, {
     }
 }));
 
+app.use('/html', express.static(htmlPath, staticOptions));
+app.use('/css', express.static(cssPath, staticOptions));
+app.use('/js', express.static(jsPath, staticOptions));
+
 app.use(express.static(websitePath, staticOptions));
 app.use(express.static(adminPublicPath, staticOptions));
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(htmlPath, 'index.html'));
+});
+
+app.get('/html', (req, res) => {
+    res.redirect('/html/index.html');
+});
+
+const legacyHtmlRedirects = {
+    '/admin.html': '/html/public/admin.html',
+    '/index.html': '/html/index.html',
+    '/extensions.html': '/html/extensions.html',
+    '/modpack.html': '/html/modpack.html',
+    '/dashboard.html': '/html/dashboard.html',
+    '/profile.html': '/html/profile.html',
+    '/admin_extensions.html': '/html/admin_extensions.html',
+    '/privacy-policy.html': '/html/privacy-policy.html',
+    '/privacy.html': '/html/privacy.html',
+    '/imprint.html': '/html/imprint.html',
+    '/analytics-opt-out.html': '/html/analytics-opt-out.html',
+    '/colors.html': '/html/colors.html',
+    '/docs/index.html': '/html/docs/index.html',
+    '/docs/extension/index.html': '/html/docs/extension/index.html',
+    '/docs/launcher/index.html': '/html/docs/launcher/index.html',
+    '/user.html': '/html/public/user.html',
+    '/maintenance.html': '/html/public/maintenance.html'
+};
+
+Object.entries(legacyHtmlRedirects).forEach(([from, to]) => {
+    app.get(from, (req, res) => res.redirect(to));
+});
+
 app.get('/extensions/:identifier', (req, res) => {
-    res.sendFile(path.join(__dirname, 'extension_detail.html'), { headers: { 'Cache-Control': 'no-cache, must-revalidate' } });
+    res.sendFile(path.join(__dirname, 'html', 'extension_detail.html'), { headers: { 'Cache-Control': 'no-cache, must-revalidate' } });
 });
 
 codesSystem(app, ADMIN_PASSWORD, pool);
@@ -1219,3 +1261,4 @@ server.listen(PORT, async () => {
         console.error('[Database] Critical error during auto-init:', err.message);
     }
 });
+

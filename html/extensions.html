@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lux Client - Extensions</title>
-    <link rel="icon" type="image/png" href="resources/lux_icon.png?v=3">
+    <link rel="icon" type="image/png" href="/resources/lux_icon.png?v=3">
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -13,7 +13,7 @@
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
 
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="/css/style.css?v=1">
 
     <script>        tailwind.config = {
             theme: {
@@ -64,6 +64,11 @@
                     class="flex items-center justify-between bg-white/5 hover:bg-primary hover:text-black p-5 rounded-2xl transition-all">
                     <span class="font-bold text-lg">Linux (.rpm)</span>
                     <span class="text-xs uppercase font-black opacity-50 tracking-widest">Fedora / RedHat</span>
+                </a>
+                <a id="modalAppImage" href="#"
+                    class="flex items-center justify-between bg-white/5 hover:bg-primary hover:text-black p-5 rounded-2xl transition-all">
+                    <span class="font-bold text-lg">Linux (.AppImage)</span>
+                    <span class="text-xs uppercase font-black opacity-50 tracking-widest">Universal</span>
                 </a>
             </div>
 
@@ -116,24 +121,24 @@
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="flex items-center justify-between h-20">
 
-                <a href="index.html" class="flex items-center gap-3 group shrink-0">
+                <a href="/html/index.html" class="flex items-center gap-3 group shrink-0">
                     <img src="/resources/lux_icon.png?v=3" alt="Lux Client Logo"
                         class="w-10 h-10 object-contain group-hover:scale-110 transition-transform duration-300" />
                     <span class="text-2xl font-extrabold tracking-tighter text-white">Lux Client</span>
                 </a>
                 <div
                     class="hidden md:flex items-center gap-6 lg:gap-10 text-sm font-semibold tracking-wide uppercase text-gray-400">
-                    <a href="index.html#features" class="hover:text-primary transition-colors">Features</a>
+                    <a href="/html/index.html#features" class="hover:text-primary transition-colors">Features</a>
                     <a href="https://pluginhub.de/discord.html" class="hover:text-primary transition-colors">Support</a>
-                    <a href="docs/index.html" class="hover:text-primary transition-colors">Documentation</a>
-                    <a href="extensions.html" class="text-primary hover:text-white font-bold relative group">
+                    <a href="/html/docs/index.html" class="hover:text-primary transition-colors">Documentation</a>
+                    <a href="/html/extensions.html" class="text-primary hover:text-white font-bold relative group">
                         Extensions
                         <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-primary transition-all"></span>
                     </a>
-                    <a href="modpack.html"
+                    <a href="/html/modpack.html"
                         class="text-gray-400 hover:text-primary transition-colors font-semibold">Modpack
                         Editor</a>
-                    <a href="https://github.com/Fernsehheft/MCLC-Client" class="hover:text-primary transition-colors"
+                    <a href="https://github.com/Lux-Client/Lux-Client" class="hover:text-primary transition-colors"
                         target="_blank">GitHub</a>
                 </div>
                 <div class="flex items-center gap-4" id="nav-right-group">
@@ -159,22 +164,22 @@
             class="md:hidden bg-surface/95 backdrop-blur-xl border-b border-white/5 overflow-hidden transition-all duration-300">
             <div
                 class="px-6 py-6 space-y-4 flex flex-col items-center text-center font-semibold text-gray-300 uppercase tracking-wide">
-                <a href="index.html"
+                <a href="/html/index.html"
                     class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
                     onclick="toggleMenu()">Home</a>
-                <a href="index.html#features"
+                <a href="/html/index.html#features"
                     class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
                     onclick="toggleMenu()">Features</a>
                 <a href="https://pluginhub.de/discord.html"
                     class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
                     onclick="toggleMenu()">Support</a>
-                <a href="docs/index.html"
+                <a href="/html/docs/index.html"
                     class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
                     onclick="toggleMenu()">Documentation</a>
-                <a href="extensions.html"
+                <a href="/html/extensions.html"
                     class="block w-full py-2 text-primary hover:text-white hover:bg-white/5 rounded-lg transition-all"
                     onclick="toggleMenu()">Extensions</a>
-                <a href="https://github.com/Fernsehheft/MCLC-Client" target="_blank"
+                <a href="https://github.com/Lux-Client/Lux-Client" target="_blank"
                     class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
                     onclick="toggleMenu()">GitHub</a>
 
@@ -242,9 +247,9 @@
                 </div>
                 <div
                     class="flex flex-wrap justify-center gap-6 md:gap-8 text-sm font-medium text-gray-500 uppercase tracking-widest">
-                    <a href="/index.html" class="hover:text-primary transition-colors">Home</a>
-                    <a href="/privacy-policy.html" class="hover:text-primary transition-colors">Imprint & Privacy</a>
-                    <a href="/analytics-opt-out.html" class="hover:text-primary transition-colors">Opt-Out</a>
+                    <a href="/html/index.html" class="hover:text-primary transition-colors">Home</a>
+                    <a href="/html/privacy-policy.html" class="hover:text-primary transition-colors">Imprint & Privacy</a>
+                    <a href="/html/analytics-opt-out.html" class="hover:text-primary transition-colors">Opt-Out</a>
                 </div>
                 <p class="text-gray-600 text-xs text-center md:text-right">
                     &copy; 2026 Lux Client Team. Not an official Minecraft product.
@@ -252,43 +257,19 @@
             </div>
         </div>
     </footer>
-    <script src="main.js?v=8"></script>
-    <script>        function toggleModal() {
-            const modal = document.getElementById('downloadModal');
-            if (modal) {
+    <script src="/js/main.js?v=2"></script>
+    <script>
+        if (typeof window.toggleModal !== 'function') {
+            window.toggleModal = function () {
+                const modal = document.getElementById('downloadModal');
+                if (!modal) return;
                 modal.classList.toggle('hidden');
                 modal.classList.toggle('flex');
                 document.body.classList.toggle('overflow-hidden');
-            }
+            };
         }
-        async function fetchLatestRelease() {
-            try {
-                const response = await fetch('https://api.github.com/repos/Fernsehheft/MCLC-Client/releases/latest');
-                if (!response.ok) throw new Error('Failed');
-                const release = await response.json();
-                const assets = release.assets || [];
-
-                const getAsset = (ext) => assets.find(a => a.name.toLowerCase().endsWith(ext))?.browser_download_url;
-                const winUrl = getAsset('.exe') || 'https://github.com/Fernsehheft/MCLC-Client/releases/latest';
-                const debUrl = getAsset('.deb') || 'https://github.com/Fernsehheft/MCLC-Client/releases/latest';
-                const rpmUrl = getAsset('.rpm') || 'https://github.com/Fernsehheft/MCLC-Client/releases/latest';
-
-                const setUrl = (id, url) => {
-                    const el = document.getElementById(id);
-                    if (el) el.href = url;
-                };
-                setUrl('modalWin', winUrl);
-                setUrl('modalDeb', debUrl);
-                setUrl('modalRpm', rpmUrl);
-
-                // Also update the nav button to open modal instead of direct link if preferred, 
-                // but here we keep it as is or change to toggleModal
-            } catch (e) {
-                console.log('Using default download links');
-            }
-        }
-        document.addEventListener('DOMContentLoaded', fetchLatestRelease);
-        let currentExtensionTab = 'extension';
+    </script>
+    <script>        let currentExtensionTab = 'extension';
 
         function setExtensionTab(tab) {
             currentExtensionTab = tab;
@@ -398,3 +379,6 @@
 </body>
 
 </html>
+
+
+

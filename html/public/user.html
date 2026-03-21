@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lux Client - Developer Profile</title>
-    <link rel="icon" type="image/png" href="resources/logo.png">
+    <link rel="icon" type="image/png" href="/resources/lux_icon.png?v=3">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/css/public-style.css?v=1">
     <script>        tailwind.config = {
             theme: {
                 extend: {
@@ -30,15 +30,15 @@
     <nav class="fixed top-0 left-0 right-0 z-[100] transition-all duration-300 bg-background/80 backdrop-blur-md border-b border-white/5 h-20"
         id="navbar">
         <div class="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-full">
-            <a href="index.html" class="flex items-center gap-3">
+            <a href="/html/index.html" class="flex items-center gap-3">
                 <img src="/resources/lux_icon.png?v=3" alt="Lux Client Logo" class="w-10 h-10 object-contain">
                 <span class="text-2xl font-extrabold tracking-tighter text-white">Lux Client</span>
             </a>
 
             <div class="hidden md:flex items-center gap-10">
-                <a href="index.html" class="text-gray-400 hover:text-white font-bold transition-all">Home</a>
-                <a href="extensions.html" class="text-gray-400 hover:text-white font-bold transition-all">Extensions</a>
-                <a href="dashboard.html"
+                <a href="/html/index.html" class="text-gray-400 hover:text-white font-bold transition-all">Home</a>
+                <a href="/html/extensions.html" class="text-gray-400 hover:text-white font-bold transition-all">Extensions</a>
+                <a href="/html/dashboard.html"
                     class="bg-white/5 hover:bg-white/10 text-white px-6 py-2.5 rounded-xl font-bold transition-all">Dashboard</a>
             </div>
         </div>
@@ -56,7 +56,7 @@
             <p id="user-bio" class="text-xl text-gray-400 max-w-2xl leading-relaxed">...</p>
             <div class="mt-8 flex gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
                 <span id="user-role">Member</span>
-                <span>•</span>
+                <span>|</span>
                 <span id="user-joined">Joined ...</span>
             </div>
         </div>
@@ -123,7 +123,10 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadUserProfile);</script>
-    <script src="../main.js?v=8"></script>
+    <script src="/js/main.js?v=1"></script>
 </body>
 
 </html>
+
+
+

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Lux Client Web Modpack Editor
  * Logic for Modrinth Integration, State Management, and Export/Import.
  */
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const res = await fetch('/api/user?_cb=' + Date.now());
         if (res.status === 503) {
-            window.location.href = '/maintenance.html';
+            window.location.href = '/html/public/maintenance.html';
             return;
         }
         if (res.ok) {
@@ -639,7 +639,7 @@ function loadDrafts() {
                 </div>
                 <h4 class="text-xl font-bold text-white mb-2">Login Required</h4>
                 <p class="text-gray-400 mb-6">To see your recent modpacks and sync them across devices, please sign in.</p>
-                <a href="/auth/google?returnTo=/modpack.html&v=3" class="inline-flex items-center gap-2 bg-primary text-black px-8 py-3 rounded-xl font-bold hover:shadow-[0_0_20px_rgba(226, 118, 2,0.3)] transition-all">
+                <a href="/auth/google?returnTo=/html/modpack.html&v=3" class="inline-flex items-center gap-2 bg-primary text-black px-8 py-3 rounded-xl font-bold hover:shadow-[0_0_20px_rgba(226, 118, 2,0.3)] transition-all">
                     Sign In to Lux Client [v3]
                 </a>
             </div>
@@ -677,9 +677,9 @@ function loadDrafts() {
                     <h5 class="font-bold text-white text-lg">${draft.name || 'Untitled Project'}</h5>
                     <div class="flex items-center gap-3 text-xs text-gray-500 font-bold uppercase tracking-wider">
                         <span>${draft.version}</span>
-                        <span class="opacity-30">•</span>
+                        <span class="opacity-30">â€¢</span>
                         <span>${draft.loader}</span>
-                        <span class="opacity-30">•</span>
+                        <span class="opacity-30">â€¢</span>
                         <span>${dateStr}</span>
                     </div>
                 </div>
@@ -1027,3 +1027,4 @@ function restoreDraft(index) {
     triggerSearch();
     alert('Draft loaded successfully!');
 }
+

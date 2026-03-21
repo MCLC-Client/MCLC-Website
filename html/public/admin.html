@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!-- Lux Client Admin v1.2 - Software, Versions & Path Debugging -->
 <html lang="en">
 
@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lux Client News Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/css/public-style.css?v=1">
     <!-- Chart.js and Socket.IO -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -356,9 +356,9 @@
                 <div style="flex:1;">
                     <h4 style="color:white; margin-bottom:5px;">${escapeHTML(item.title)}</h4>
                     <p class="description-box" style="-webkit-line-clamp: unset !important; line-clamp: unset !important; max-height: none !important; overflow: visible !important;">${descriptionWithLinks}</p>
-                    <small style="color:var(--text-muted);">${escapeHTML(item.date)} ${item.link ? '• <a href="' + escapeHTML(item.link) + '" target="_blank" style="color:var(--secondary)">Link</a>' : ''}</small>
+                    <small style="color:var(--text-muted);">${escapeHTML(item.date)} ${item.link ? 'â€¢ <a href="' + escapeHTML(item.link) + '" target="_blank" style="color:var(--secondary)">Link</a>' : ''}</small>
                 </div>
-                <button onclick="removeNews(${index})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:1.2rem;" title="Delete">🗑</button>
+                <button onclick="removeNews(${index})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:1.2rem;" title="Delete">ðŸ—‘</button>
             </div>
         `;
             }).join('');
@@ -492,12 +492,12 @@
 
             codes.forEach(c => {
                 const tr = document.createElement('tr');
-                const createdDate = c.created ? new Date(c.created).toLocaleString() : '—';
-                const expiresDate = c.expires ? new Date(c.expires).toLocaleString() : '—';
+                const createdDate = c.created ? new Date(c.created).toLocaleString() : 'â€”';
+                const expiresDate = c.expires ? new Date(c.expires).toLocaleString() : 'â€”';
 
                 tr.innerHTML = `
                     <td style="padding:10px; font-family:monospace; color:var(--primary); font-weight:bold;">${c.code}</td>
-                    <td style="padding:10px;">${c.name || '—'}</td>
+                    <td style="padding:10px;">${c.name || 'â€”'}</td>
                     <td style="padding:10px;">${c.version || '?'} (${c.loader || '?'})</td>
                     <td style="padding:10px;">${c.uses || 0}</td>
                     <td style="padding:10px;">${createdDate}</td>
@@ -908,3 +908,5 @@
 </body>
 
 </html>
+
+

@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 const CODES_DIR = path.join(__dirname, 'codes');
 if (!fs.existsSync(CODES_DIR)) {
@@ -135,25 +135,25 @@ module.exports = function (app, ADMIN_PASSWORD, pool) {
                 ip = ip.split(',')[0].trim();
             }
 
-            console.log(`[CodesSystem-Debug] 🔍 my-codes called. Query UUID: '${uuid}', Extracted IP: '${ip}'`);
+            console.log(`[CodesSystem-Debug] ðŸ” my-codes called. Query UUID: '${uuid}', Extracted IP: '${ip}'`);
 
             let rows = [];
             if (uuid && uuid !== 'undefined' && uuid !== 'null') {
-                console.log(`[CodesSystem-Debug] 🔍 Searching database via UUID: ${uuid}`);
+                console.log(`[CodesSystem-Debug] ðŸ” Searching database via UUID: ${uuid}`);
                 [rows] = await pool.query('SELECT code FROM modpack_codes WHERE owner_uuid = ?', [uuid]);
             } else {
-                console.log(`[CodesSystem-Debug] 🔍 Searching database via IP: ${ip}`);
+                console.log(`[CodesSystem-Debug] ðŸ” Searching database via IP: ${ip}`);
                 [rows] = await pool.query('SELECT code FROM modpack_codes WHERE owner_ip = ?', [ip]);
             }
 
-            console.log(`[CodesSystem-Debug] 🔍 Database returned ${rows.length} rows:`, rows);
+            console.log(`[CodesSystem-Debug] ðŸ” Database returned ${rows.length} rows:`, rows);
 
             const codes = [];
 
             for (const row of rows) {
                 const filePath = path.join(CODES_DIR, `${row.code}.json`);
                 const exists = fs.existsSync(filePath);
-                console.log(`[CodesSystem-Debug] 🔍 Checking file for code ${row.code} at ${filePath}. Exists on disk? ${exists}`);
+                console.log(`[CodesSystem-Debug] ðŸ” Checking file for code ${row.code} at ${filePath}. Exists on disk? ${exists}`);
 
                 if (exists) {
                     try {
@@ -166,12 +166,12 @@ module.exports = function (app, ADMIN_PASSWORD, pool) {
                             uses: content.uses || 0
                         });
                     } catch (e) {
-                        console.error(`[CodesSystem-Debug] ❌ JSON Parse Error for code ${row.code}:`, e.message);
+                        console.error(`[CodesSystem-Debug] âŒ JSON Parse Error for code ${row.code}:`, e.message);
                     }
                 }
             }
 
-            console.log(`[CodesSystem-Debug] ✅ Returning ${codes.length} valid codes to frontend.`);
+            console.log(`[CodesSystem-Debug] âœ… Returning ${codes.length} valid codes to frontend.`);
             res.json({ success: true, codes });
         } catch (error) {
             console.error('[CodesSystem] List user codes error:', error);

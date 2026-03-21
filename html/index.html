@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lux Client – Premium Minecraft Launcher</title>
+  <title>Lux Client - Premium Minecraft Launcher</title>
   <meta name="description"
     content="Lux Client is a high-performance, modern Minecraft launcher with integrated mod support, skin viewing, and advanced instance management." />
   <meta name="author" content="Fernsehheft, Mobilestars & ItzzMateo" />
@@ -13,7 +13,7 @@
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#e27602" />
 
-  <meta property="og:title" content="Lux Client – Premium Minecraft Launcher" />
+  <meta property="og:title" content="Lux Client - Premium Minecraft Launcher" />
   <meta property="og:description"
     content="Lux Client is a high-performance, modern Minecraft launcher with integrated mod support, skin viewing, and advanced instance management." />
   <meta property="og:type" content="website" />
@@ -27,7 +27,7 @@
     rel="stylesheet" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="style.css?v=2" />
+  <link rel="stylesheet" href="/css/style.css?v=1" />
   <script>    tailwind.config = {
       theme: {
         extend: {
@@ -131,7 +131,7 @@
     <div class="max-w-7xl mx-auto px-6 lg:px-12">
       <div class="flex items-center justify-between h-20 gap-4">
 
-        <a href="index.html" class="flex items-center gap-3 group shrink-0">
+        <a href="/html/index.html" class="flex items-center gap-3 group shrink-0">
           <img src="/resources/lux_icon.png?v=3" alt="Lux Client Logo"
             class="w-10 h-10 object-contain group-hover:scale-110 transition-transform duration-300" />
           <span class="text-2xl font-extrabold tracking-tighter text-white hidden sm:inline">Lux Client</span>
@@ -140,13 +140,13 @@
           class="hidden md:flex items-center gap-6 lg:gap-10 text-sm font-semibold tracking-wide uppercase text-gray-400">
           <a href="#features" class="hover:text-primary transition-colors">Features</a>
           <a href="https://pluginhub.de/discord.html" class="hover:text-primary transition-colors">Support</a>
-          <a href="docs/index.html" class="hover:text-primary transition-colors">Documentation</a>
+          <a href="/html/docs/index.html" class="hover:text-primary transition-colors">Documentation</a>
 
-          <a href="extensions.html"
+          <a href="/html/extensions.html"
             class="text-gray-400 hover:text-primary transition-colors font-semibold">Extensions</a>
-          <a href="modpack.html" class="text-gray-400 hover:text-primary transition-colors font-semibold">Modpack
+          <a href="/html/modpack.html" class="text-gray-400 hover:text-primary transition-colors font-semibold">Modpack
             Editor</a>
-          <a href="https://github.com/Fernsehheft/MCLC-Client" class="hover:text-primary transition-colors"
+          <a href="https://github.com/Lux-Client/Lux-Client" class="hover:text-primary transition-colors"
             target="_blank">GitHub</a>
         </div>
         <div class="flex items-center gap-4" id="nav-right-group">
@@ -175,17 +175,17 @@
         <a href="https://pluginhub.de/discord.html"
           class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
           onclick="toggleMenu()">Support</a>
-        <a href="docs/index.html"
+        <a href="/html/docs/index.html"
           class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
           onclick="toggleMenu()">Documentation</a>
 
-        <a href="extensions.html"
+        <a href="/html/extensions.html"
           class="block w-full py-2 text-gray-300 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
           onclick="toggleMenu()">Extensions</a>
-        <a href="modpack.html"
+        <a href="/html/modpack.html"
           class="block w-full py-2 text-gray-300 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
           onclick="toggleMenu()">Modpack Editor</a>
-        <a href="https://github.com/Fernsehheft/MCLC-Client" target="_blank"
+        <a href="https://github.com/Lux-Client/Lux-Client" target="_blank"
           class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
           onclick="toggleMenu()">GitHub</a>
         <button onclick="toggleModal(); toggleMenu();"
@@ -223,7 +223,7 @@
         </span>
         <br />
         <span
-          class="text-primary italic underline decoration-4 decoration-primary drop-shadow-[0_2px_20px_rgba(34,197,94,0.24)] tracking-wider text-shadow-lg animate-glow">
+          class="text-primary italic underline decoration-4 decoration-primary drop-shadow-[0_2px_20px_rgba(226,118,2,0.28)] tracking-wider text-shadow-lg animate-glow">
           NOW MORE THAN EVER BEFORE
         </span>
       </h1>
@@ -242,7 +242,7 @@
           </svg>
           Download Launcher
         </button>
-        <a href="https://github.com/Fernsehheft/MCLC-Client" target="_blank"
+        <a href="https://github.com/Lux-Client/Lux-Client" target="_blank"
           class="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-white px-10 py-5 rounded-2xl font-bold text-lg transition-all backdrop-blur-md text-center">
           View Source
         </a>
@@ -339,72 +339,33 @@
         <div
           class="flex flex-wrap justify-center gap-6 md:gap-12 text-sm text-gray-400 font-bold uppercase tracking-widest">
           <a href="https://pluginhub.de/discord.html" class="hover:text-primary transition-colors">Discord</a>
-          <a href="privacy-policy.html" class="hover:text-primary transition-colors">Imprint & Privacy</a>
-          <a href="analytics-opt-out.html" class="hover:text-primary transition-colors">Opt-Out</a>
-          <a href="https://github.com/Fernsehheft/MCLC-Client" class="hover:text-primary transition-colors">GitHub</a>
+          <a href="/html/privacy-policy.html" class="hover:text-primary transition-colors">Imprint & Privacy</a>
+          <a href="/html/analytics-opt-out.html" class="hover:text-primary transition-colors">Opt-Out</a>
+          <a href="https://github.com/Lux-Client/Lux-Client" class="hover:text-primary transition-colors">GitHub</a>
         </div>
         <div class="text-gray-600 text-sm text-center md:text-right font-medium">
-          © 2026 Lux-Client. Built by <br />
+          (c) 2026 Lux-Client. Built by <br />
           <span class="text-gray-400">Fernsehheft, Mobilestars</span>
         </div>
       </div>
     </div>
   </footer>
 
-  <script>    function toggleModal() {
-      const modal = document.getElementById('downloadModal');
-      modal.classList.toggle('hidden');
-      modal.classList.toggle('flex');
-      document.body.classList.toggle('modal-active');
+  <script src="/js/main.js?v=2"></script>
+  <script>
+    if (typeof window.toggleModal !== 'function') {
+      window.toggleModal = function () {
+        const modal = document.getElementById('downloadModal');
+        if (!modal) return;
+        modal.classList.toggle('hidden');
+        modal.classList.toggle('flex');
+        document.body.classList.toggle('overflow-hidden');
+      };
     }
-
-    (async function () {
-      const REPO = 'MCLC-Client/MCLC-Client';
-
-      async function fetchLatestRelease() {
-        try {
-          const response = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
-          if (!response.ok) throw new Error('GitHub API error');
-          const release = await response.json();
-          const assets = release.assets;
-
-          const getAsset = (ext) => assets.find(a => a.name.toLowerCase().endsWith(ext))?.browser_download_url;
-
-          return {
-            version: release.tag_name.startsWith('v') ? release.tag_name : 'v' + release.tag_name,
-            win: getAsset('.exe') || `https://github.com/${REPO}/releases/download/${release.tag_name}/MCLC-setup.exe`,
-            deb: getAsset('.deb') || `https://github.com/${REPO}/releases/download/${release.tag_name}/MCLC-setup.deb`,
-            rpm: getAsset('.rpm') || `https://github.com/${REPO}/releases/download/${release.tag_name}/MCLC-setup.rpm`,
-            appimage: getAsset('.appimage') || `https://github.com/${REPO}/releases/download/${release.tag_name}/MCLC-setup.AppImage`
-          };
-        } catch (error) {
-
-          return {
-            version: 'v1.3.3',
-            win: 'https://github.com/MCLC-Client/MCLC-Client/releases/latest/download/MCLC-setup.exe',
-            deb: 'https://github.com/MCLC-Client/MCLC-Client/releases/latest/download/MCLC-setup.deb',
-            rpm: 'https://github.com/MCLC-Client/MCLC-Client/releases/latest/download/MCLC-setup.rpm',
-            appimage: 'https://github.com/MCLC-Client/MCLC-Client/releases/latest/download/MCLC-setup.AppImage'
-          };
-        }
-      }
-
-      const links = await fetchLatestRelease();
-      const versionEl = document.getElementById('versionDisplay');
-      if (versionEl) versionEl.textContent = links.version;
-      const winBtn = document.getElementById('modalWin');
-      const debBtn = document.getElementById('modalDeb');
-      const rpmBtn = document.getElementById('modalRpm');
-      const appImageBtn = document.getElementById('modalAppImage');
-
-      if (winBtn) winBtn.href = links.win;
-      if (debBtn) debBtn.href = links.deb;
-      if (rpmBtn) rpmBtn.href = links.rpm;
-      if (appImageBtn) appImageBtn.href = links.appimage;
-
-    })();</script>
-
-  <script src="main.js?v=8"></script>
+  </script>
 </body>
 
 </html>
+
+
+

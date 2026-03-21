@@ -341,48 +341,56 @@ button.primary:hover {
     box-shadow: 0 0 10px rgba(226, 118, 2, 0.3);
 }
 
-#mobile-menu {
-    position: fixed;
-    top: 80px;
-    left: 0;
-    right: 0;
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
-    visibility: hidden;
-    background: rgba(8, 8, 8, 0.98);
-    backdrop-filter: blur(25px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    z-index: 90;
-}
-
-#mobile-menu.open {
-    max-height: 100vh;
-    opacity: 1;
-    pointer-events: auto;
-    visibility: visible;
-    padding-bottom: 2rem;
-}
-
-#navbar.scrolled + #mobile-menu {
-    top: 70px;
-}
-
 #navbar {
-    height: 80px;
-    transition: all 0.3s ease;
+    min-height: 80px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#navbar .max-w-7xl>div {
+    min-height: 80px;
 }
 
 #navbar.scrolled {
-    height: 70px;
     background: rgba(8, 8, 8, 0.95);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.scrolled .nav-container {
-    height: 70px;
+#mobile-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+    pointer-events: none;
+    visibility: hidden;
+    background: rgba(8, 8, 8, 0.98);
+    backdrop-filter: blur(25px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#mobile-menu.open {
+    max-height: 85vh;
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+}
+
+@media (max-width: 767px) {
+    #navbar .text-2xl {
+        font-size: 1.2rem;
+        line-height: 1.2;
+    }
+
+    #navbar #nav-right-group {
+        gap: 0.5rem;
+    }
+
+    #navbar #downloadNavBtn {
+        display: none;
+    }
 }

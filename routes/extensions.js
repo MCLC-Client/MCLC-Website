@@ -1,4 +1,4 @@
-// routes/extensions.js - Ergänzung
+﻿// routes/extensions.js - ErgÃ¤nzung
 
 // POST /api/extensions/:identifier/download - Increment download count
 router.post('/api/extensions/:identifier/download', async (req, res) => {

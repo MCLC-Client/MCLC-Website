@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" class="scroll-smooth bg-background text-gray-200 antialiased">
 
 <head>
@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Lux Client Documentation</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" type="image/png" href="../resources/lux_icon.png?v=3" />
+  <link rel="icon" type="image/png" href="/resources/lux_icon.png?v=3" />
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Poppins:wght@400;700&display=swap"
     rel="stylesheet">
@@ -38,30 +38,30 @@
     id="navbar">
     <div class="max-w-7xl mx-auto px-6 lg:px-12">
       <div class="flex items-center justify-between h-20 gap-4">
-        <a href="../index.html" class="flex items-center gap-3 group shrink-0">
-          <img src="../resources/lux_icon.png?v=3" alt="Lux Client Logo"
+        <a href="/html/index.html" class="flex items-center gap-3 group shrink-0">
+          <img src="/resources/lux_icon.png?v=3" alt="Lux Client Logo"
             class="w-10 h-10 object-contain group-hover:scale-110 transition-transform duration-300" />
           <span class="text-2xl font-extrabold tracking-tighter text-white hidden sm:inline">Lux Client</span>
         </a>
         <div
           class="hidden md:flex items-center gap-6 lg:gap-10 text-sm font-semibold tracking-wide uppercase text-gray-400">
-          <a href="../index.html#features" class="hover:text-primary transition-colors">Features</a>
+          <a href="/html/index.html#features" class="hover:text-primary transition-colors">Features</a>
           <a href="https://pluginhub.de/discord.html" class="hover:text-primary transition-colors">Support</a>
-          <a href="index.html" class="text-primary transition-colors font-bold">Documentation</a>
-          <a href="../extensions.html"
+          <a href="/html/index.html" class="text-primary transition-colors font-bold">Documentation</a>
+          <a href="/html/extensions.html"
             class="text-gray-400 hover:text-primary transition-colors font-semibold">Extensions</a>
-          <a href="../modpack.html" class="hover:text-primary transition-colors">Modpack Editor</a>
-          <a href="https://github.com/Fernsehheft/MCLC-Client" class="hover:text-primary transition-colors"
+          <a href="/html/modpack.html" class="hover:text-primary transition-colors">Modpack Editor</a>
+          <a href="https://github.com/Lux-Client/Lux-Client" class="hover:text-primary transition-colors"
             target="_blank">GitHub</a>
         </div>
         <div class="flex items-center gap-4" id="nav-right-group">
           <div class="hidden md:block">
-            <a id="downloadNavBtn" href="../index.html#"
+            <a id="downloadNavBtn" href="/html/index.html#"
               class="bg-primary hover:bg-primary-dark text-black px-6 py-2.5 rounded-xl font-bold transition-all shadow-primary-glow transform hover:scale-105 active:scale-95 shrink-0 whitespace-nowrap">
               Download
             </a>
           </div>
-          <button id="mobile-menu-btn" onclick="toggleMenu()"
+          <button id="mobile-menu-btn"
             class="md:hidden text-gray-300 hover:text-primary focus:outline-none transition-colors p-2">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -71,24 +71,24 @@
       </div>
     </div>
     <div id="mobile-menu"
-      class="hidden md:hidden bg-surface/95 backdrop-blur-xl border-b border-white/5 overflow-hidden transition-all duration-300">
+      class="md:hidden bg-surface/95 backdrop-blur-xl border-b border-white/5 overflow-hidden transition-all duration-300">
       <div
         class="px-6 py-6 space-y-4 flex flex-col items-center text-center font-semibold text-gray-300 uppercase tracking-wide">
-        <a href="../index.html#features"
+        <a href="/html/index.html#features"
           class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
           onclick="toggleMenu()">Features</a>
         <a href="https://pluginhub.de/discord.html"
           class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
           onclick="toggleMenu()">Support</a>
-        <a href="index.html" class="block w-full py-2 text-primary font-bold hover:bg-white/5 rounded-lg transition-all"
+        <a href="/html/index.html" class="block w-full py-2 text-primary font-bold hover:bg-white/5 rounded-lg transition-all"
           onclick="toggleMenu()">Documentation</a>
-        <a href="../extensions.html"
+        <a href="/html/extensions.html"
           class="block w-full py-2 text-gray-300 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
           onclick="toggleMenu()">Extensions</a>
-        <a href="https://github.com/Fernsehheft/MCLC-Client" target="_blank"
+        <a href="https://github.com/Lux-Client/Lux-Client" target="_blank"
           class="block w-full py-2 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
           onclick="toggleMenu()">GitHub</a>
-        <a id="downloadNavBtnMobile" href="../index.html#"
+        <a id="downloadNavBtnMobile" href="/html/index.html#"
           class="block w-full bg-primary text-black py-4 rounded-xl font-black mt-4 shadow-primary-glow active:scale-95 transition-all"
           onclick="toggleMenu()">
           Download Now
@@ -97,19 +97,8 @@
     </div>
   </nav>
 
-  <script>
-    function toggleMenu() {
-      const menu = document.getElementById('mobile-menu');
-      if (menu.classList.contains('hidden')) {
-        menu.classList.remove('hidden');
-      } else {
-        menu.classList.add('hidden');
-      }
-    }
-  </script>
-
   <header class="max-w-3xl mx-auto flex items-center gap-4 mb-12 mt-14">
-    <img src="../resources/lux_icon.png?v=3" alt="Lux Client Logo" class="w-14 h-14 rounded-xl shadow-lg bg-surface/80" />
+    <img src="/resources/lux_icon.png?v=3" alt="Lux Client Logo" class="w-14 h-14 rounded-xl shadow-lg bg-surface/80" />
     <div>
       <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight drop-shadow-lg">Lux Client Documentation Hub
       </h1>
@@ -122,11 +111,11 @@
     <section class="mb-14">
       <h2 class="text-2xl md:text-3xl font-bold text-primary mb-8">All Documentation</h2>
       <div class="flex flex-col space-y-6">
-        <a href="./launcher/index.html"
+        <a href="/html/docs/launcher/index.html"
           class="block bg-surface/80 border border-white/10 rounded-2xl p-6 lg:p-8 hover:shadow-primary-glow hover:border-primary transition-all group">
           <div class="flex items-center gap-4">
             <span class="inline-flex items-center justify-center rounded-xl bg-primary/10 w-14 h-14">
-              <img src="../resources/lux_icon.png?v=3" alt="Lux Client" class="w-8 h-8 object-contain">
+              <img src="/resources/lux_icon.png?v=3" alt="Lux Client" class="w-8 h-8 object-contain">
             </span>
             <div>
               <h3 class="text-xl font-semibold text-white group-hover:text-primary transition-colors">
@@ -139,7 +128,7 @@
           </div>
         </a>
 
-        <a href="./extension/index.html"
+        <a href="/html/docs/extension/index.html"
           class="block bg-surface/80 border border-white/10 rounded-2xl p-6 lg:p-8 hover:shadow-primary-glow hover:border-primary transition-all group">
           <div class="flex items-center gap-4">
             <span class="inline-flex items-center justify-center rounded-xl bg-primary/10 w-14 h-14">
@@ -171,7 +160,7 @@
           Need help right now?
           <span class="font-bold text-primary">
             Open a
-            <a href="https://github.com/MCLC-Client/MCLC-Client/issues"
+            <a href="https://github.com/Lux-Client/Lux-Client/issues"
               class="underline underline-offset-4 decoration-primary text-primary-400 hover:text-primary/80 transition-colors">GitHub
               issue</a>
             or
@@ -184,7 +173,10 @@
       </ul>
     </section>
   </main>
-  <script src="../main.js?v=8"></script>
+  <script src="/js/main.js?v=1"></script>
 </body>
 
 </html>
+
+
+

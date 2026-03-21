@@ -1,4 +1,4 @@
-window.copyToClipboard = function (text, btn) {
+﻿window.copyToClipboard = function (text, btn) {
     if (!text) return;
     navigator.clipboard.writeText(text).then(() => {
         const originalHTML = btn.innerHTML;
@@ -13,6 +13,18 @@ window.copyToClipboard = function (text, btn) {
     });
 };
 
+function toggleModal() {
+    const modal = document.getElementById('downloadModal');
+    if (!modal) return;
+
+    modal.classList.toggle('hidden');
+    modal.classList.toggle('flex');
+    document.body.classList.toggle('overflow-hidden');
+}
+
+// Expose for inline onclick handlers in HTML templates.
+window.toggleModal = toggleModal;
+
 const navbar = document.getElementById('navbar');
 function handleScroll() {
     if (window.scrollY > 20) {
@@ -24,20 +36,24 @@ function handleScroll() {
 window.addEventListener('scroll', handleScroll);
 handleScroll(); // Initial check
 window.fixPath = (p) => p ? (p.startsWith('http') ? p : `/uploads/${p.replace(/^\/?uploads\//, '')}`) : '/resources/lux_icon.png?v=3';
-const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-        }
-    });
-}, {
-    threshold: 0.1
-});
-
 const revealElements = document.querySelectorAll('.reveal');
-revealElements.forEach(el => {
-    revealObserver.observe(el);
-});
+if ('IntersectionObserver' in window) {
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    revealElements.forEach(el => {
+        revealObserver.observe(el);
+    });
+} else {
+    revealElements.forEach(el => el.classList.add('active'));
+}
 const hero = document.getElementById('home');
 if (hero) {
     hero.addEventListener('mousemove', (e) => {
@@ -49,7 +65,54 @@ if (hero) {
 }
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
+    initDownloadModalLinks();
 });
+
+async function initDownloadModalLinks() {
+    const winBtn = document.getElementById('modalWin');
+    const debBtn = document.getElementById('modalDeb');
+    const rpmBtn = document.getElementById('modalRpm');
+    const appImageBtn = document.getElementById('modalAppImage');
+    if (!winBtn && !debBtn && !rpmBtn && !appImageBtn) return;
+
+    const REPO = 'Lux-Client/Lux-Client';
+    const fallback = {
+        version: 'v1.3.3',
+        win: `https://github.com/${REPO}/releases/latest/download/Lux-setup.exe`,
+        deb: `https://github.com/${REPO}/releases/latest/download/Lux-setup.deb`,
+        rpm: `https://github.com/${REPO}/releases/latest/download/Lux-setup.rpm`,
+        appimage: `https://github.com/${REPO}/releases/latest/download/Lux-setup.AppImage`
+    };
+
+    const applyLinks = (links) => {
+        if (winBtn) winBtn.href = links.win;
+        if (debBtn) debBtn.href = links.deb;
+        if (rpmBtn) rpmBtn.href = links.rpm;
+        if (appImageBtn) appImageBtn.href = links.appimage;
+
+        const versionEl = document.getElementById('versionDisplay');
+        if (versionEl && links.version) versionEl.textContent = links.version;
+    };
+
+    try {
+        const response = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
+        if (!response.ok) throw new Error('GitHub API error');
+
+        const release = await response.json();
+        const assets = release.assets || [];
+        const getAsset = (ext) => assets.find((a) => a.name.toLowerCase().endsWith(ext))?.browser_download_url;
+
+        applyLinks({
+            version: release.tag_name?.startsWith('v') ? release.tag_name : `v${release.tag_name}`,
+            win: getAsset('.exe') || fallback.win,
+            deb: getAsset('.deb') || fallback.deb,
+            rpm: getAsset('.rpm') || fallback.rpm,
+            appimage: getAsset('.appimage') || fallback.appimage
+        });
+    } catch (error) {
+        applyLinks(fallback);
+    }
+}
 
 async function checkAuth() {
     console.log('[Lux] Checking auth status...');
@@ -62,7 +125,7 @@ async function checkAuth() {
         // Use a cache buster to ensure Cloudflare doesn't serve a cached "200 OK" when backend is actually 503
         const res = await fetch('/api/user?_cb=' + Date.now());
         if (res.status === 503) {
-            window.location.href = '/maintenance.html';
+            window.location.href = '/html/public/maintenance.html';
             return;
         }
         if (res.ok) {
@@ -89,7 +152,7 @@ async function checkAuth() {
         if (data.loggedIn) {
             authSection.innerHTML = `
                 <div class="flex items-center gap-3 pl-4 border-l border-white/10">
-                    <a href="/dashboard.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                    <a href="/html/dashboard.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
                         <img src="${fixPath(data.user.avatar)}" alt="${data.user.username}" class="w-8 h-8 rounded-full border border-white/10 overflow-hidden object-cover">
                         <div class="hidden lg:block text-right leading-tight">
                             <div class="text-[10px] text-gray-400 uppercase font-black tracking-widest">Signed in</div>
@@ -135,7 +198,7 @@ async function checkAuth() {
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <a href="/dashboard.html" class="bg-white/5 text-white py-3 rounded-lg text-xs font-bold text-center">Dashboard</a>
+                        <a href="/html/dashboard.html" class="bg-white/5 text-white py-3 rounded-lg text-xs font-bold text-center">Dashboard</a>
                         <a href="${logoutUrl}" class="bg-red-500/10 text-red-500 py-3 rounded-lg text-xs font-bold text-center">Logout</a>
                     </div>
                 `;
@@ -186,4 +249,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
 
