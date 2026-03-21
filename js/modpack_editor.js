@@ -1,9 +1,8 @@
-﻿/**
+/**
  * Lux Client Web Modpack Editor
  * Logic for Modrinth Integration, State Management, and Export/Import.
  */
 
-// State (moved below elements)
 
 // Elements
 const elPackName = document.getElementById('packName');
@@ -54,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const res = await fetch('/api/user?_cb=' + Date.now());
         if (res.status === 503) {
-            window.location.href = '/html/public/maintenance.html';
+            window.location.href = '/maintenance.html';
             return;
         }
         if (res.ok) {
@@ -600,7 +599,7 @@ function updatePagination() {
     if (elNext) elNext.disabled = currentPage === totalPages;
 
     if (elPagination) {
-        if (MODPACK_STATE.installedMods.length > modsPerPage) {
+        if (totalProjects > modsPerPage) {
             elPagination.classList.remove('hidden');
         } else {
             elPagination.classList.add('hidden');
@@ -616,7 +615,10 @@ function prevPage() {
 }
 
 function nextPage() {
-    const totalPages = Math.ceil(MODPACK_STATE.installedMods.length / modsPerPage);
+    const totalProjects = MODPACK_STATE.installedMods.length +
+        MODPACK_STATE.resourcePacks.length +
+        MODPACK_STATE.shaders.length;
+    const totalPages = Math.ceil(totalProjects / modsPerPage) || 1;
     if (currentPage < totalPages) {
         currentPage++;
         renderPack();
@@ -639,7 +641,7 @@ function loadDrafts() {
                 </div>
                 <h4 class="text-xl font-bold text-white mb-2">Login Required</h4>
                 <p class="text-gray-400 mb-6">To see your recent modpacks and sync them across devices, please sign in.</p>
-                <a href="/auth/google?returnTo=/html/modpack.html&v=3" class="inline-flex items-center gap-2 bg-primary text-black px-8 py-3 rounded-xl font-bold hover:shadow-[0_0_20px_rgba(226, 118, 2,0.3)] transition-all">
+                <a href="/auth/google?returnTo=/modpack.html&v=3" class="inline-flex items-center gap-2 bg-primary text-black px-8 py-3 rounded-xl font-bold hover:shadow-[0_0_20px_rgba(226, 118, 2,0.3)] transition-all">
                     Sign In to Lux Client [v3]
                 </a>
             </div>
@@ -677,9 +679,9 @@ function loadDrafts() {
                     <h5 class="font-bold text-white text-lg">${draft.name || 'Untitled Project'}</h5>
                     <div class="flex items-center gap-3 text-xs text-gray-500 font-bold uppercase tracking-wider">
                         <span>${draft.version}</span>
-                        <span class="opacity-30">â€¢</span>
+                        <span class="opacity-30">•</span>
                         <span>${draft.loader}</span>
-                        <span class="opacity-30">â€¢</span>
+                        <span class="opacity-30">•</span>
                         <span>${dateStr}</span>
                     </div>
                 </div>
@@ -795,7 +797,21 @@ window.importModpack = async function importModpack() {
                     const modrinthRes = await fetch(`https://api.modrinth.com/v2/projects?ids=${JSON.stringify(slugsForSearch)}`);
                     if (modrinthRes.ok) {
                         const projects = await modrinthRes.json();
+                        const projectMap = new Map((projects || []).map(project => [project.id, project]));
+
+                        const addFallbackEntry = (sourceValue, targetArray, defaultType) => {
+                            const slug = typeof sourceValue === 'object' ? (sourceValue.slug || sourceValue.projectId) : sourceValue;
+                            const name = typeof sourceValue === 'object' ? (sourceValue.title || sourceValue.name || slug) : sourceValue;
+                            const icon = typeof sourceValue === 'object' ? (sourceValue.icon || sourceValue.icon_url || 'resources/lux_icon.png?v=3') : 'resources/lux_icon.png?v=3';
+
+                            if (!slug) return;
+                            if (!targetArray.some(existing => existing.slug === slug)) {
+                                targetArray.push({ slug, name, icon, modrinthId: slug, type: defaultType });
+                            }
+                        };
+
                         slugsForSearch.forEach(slug => {
+                            const p = projectMap.get(slug) || projectMap.get(String(slug));
                             if (p) {
                                 const newProject = {
                                     slug: p.slug,
@@ -810,7 +826,20 @@ window.importModpack = async function importModpack() {
                                 else MODPACK_STATE.installedMods.push(newProject);
 
                             } else {
-                                // Fallback checking would happen below
+                                const fallbackSource = allRawProjects.find(item => {
+                                    if (typeof item === 'object' && item !== null) {
+                                        return (item.projectId || item.slug) === slug;
+                                    }
+                                    return item === slug;
+                                });
+
+                                if (rawResourcePacks.includes(fallbackSource)) {
+                                    addFallbackEntry(fallbackSource, MODPACK_STATE.resourcePacks, 'resourcepack');
+                                } else if (rawShaders.includes(fallbackSource)) {
+                                    addFallbackEntry(fallbackSource, MODPACK_STATE.shaders, 'shader');
+                                } else {
+                                    addFallbackEntry(fallbackSource || slug, MODPACK_STATE.installedMods, 'mod');
+                                }
                             }
                         });
                     }
@@ -1027,4 +1056,3 @@ function restoreDraft(index) {
     triggerSearch();
     alert('Draft loaded successfully!');
 }
-

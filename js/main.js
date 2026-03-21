@@ -1,4 +1,4 @@
-﻿window.copyToClipboard = function (text, btn) {
+window.copyToClipboard = function (text, btn) {
     if (!text) return;
     navigator.clipboard.writeText(text).then(() => {
         const originalHTML = btn.innerHTML;
@@ -17,13 +17,35 @@ function toggleModal() {
     const modal = document.getElementById('downloadModal');
     if (!modal) return;
 
+    const isClosing = modal.classList.contains('flex');
     modal.classList.toggle('hidden');
     modal.classList.toggle('flex');
     document.body.classList.toggle('overflow-hidden');
+
+    // Ensure nested support dialog never stays open after closing the main modal.
+    if (isClosing) closeMacSupportModal();
+}
+
+function openMacSupportModal() {
+    const modal = document.getElementById('macSupportModal');
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeMacSupportModal() {
+    const modal = document.getElementById('macSupportModal');
+    if (!modal) return;
+
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
 }
 
 // Expose for inline onclick handlers in HTML templates.
 window.toggleModal = toggleModal;
+window.openMacSupportModal = openMacSupportModal;
+window.closeMacSupportModal = closeMacSupportModal;
 
 const navbar = document.getElementById('navbar');
 function handleScroll() {
@@ -68,30 +90,15 @@ document.addEventListener('DOMContentLoaded', () => {
     initDownloadModalLinks();
 });
 
-async function initDownloadModalLinks() {
-    const winBtn = document.getElementById('modalWin');
-    const debBtn = document.getElementById('modalDeb');
-    const rpmBtn = document.getElementById('modalRpm');
-    const appImageBtn = document.getElementById('modalAppImage');
-    if (!winBtn && !debBtn && !rpmBtn && !appImageBtn) return;
-
+async function fetchLatestReleaseLinks() {
     const REPO = 'Lux-Client/Lux-Client';
     const fallback = {
         version: 'v1.3.3',
         win: `https://github.com/${REPO}/releases/latest/download/Lux-setup.exe`,
         deb: `https://github.com/${REPO}/releases/latest/download/Lux-setup.deb`,
         rpm: `https://github.com/${REPO}/releases/latest/download/Lux-setup.rpm`,
-        appimage: `https://github.com/${REPO}/releases/latest/download/Lux-setup.AppImage`
-    };
-
-    const applyLinks = (links) => {
-        if (winBtn) winBtn.href = links.win;
-        if (debBtn) debBtn.href = links.deb;
-        if (rpmBtn) rpmBtn.href = links.rpm;
-        if (appImageBtn) appImageBtn.href = links.appimage;
-
-        const versionEl = document.getElementById('versionDisplay');
-        if (versionEl && links.version) versionEl.textContent = links.version;
+        appimage: `https://github.com/${REPO}/releases/latest/download/Lux-setup.AppImage`,
+        mac: `https://github.com/${REPO}/releases/latest/download/Lux-setup.dmg`
     };
 
     try {
@@ -100,18 +107,57 @@ async function initDownloadModalLinks() {
 
         const release = await response.json();
         const assets = release.assets || [];
-        const getAsset = (ext) => assets.find((a) => a.name.toLowerCase().endsWith(ext))?.browser_download_url;
+        const getAsset = (ext) => assets.find((asset) => asset.name.toLowerCase().endsWith(ext))?.browser_download_url;
+        const getMacAsset = () => assets.find((asset) => asset.name.toLowerCase().endsWith('.dmg'))?.browser_download_url;
 
-        applyLinks({
+        return {
             version: release.tag_name?.startsWith('v') ? release.tag_name : `v${release.tag_name}`,
             win: getAsset('.exe') || fallback.win,
             deb: getAsset('.deb') || fallback.deb,
             rpm: getAsset('.rpm') || fallback.rpm,
-            appimage: getAsset('.appimage') || fallback.appimage
-        });
+            appimage: getAsset('.appimage') || fallback.appimage,
+            mac: getMacAsset() || fallback.mac
+        };
     } catch (error) {
-        applyLinks(fallback);
+        return fallback;
     }
+}
+
+async function initDownloadModalLinks() {
+    const winBtn = document.getElementById('modalWin');
+    const debBtn = document.getElementById('modalDeb');
+    const rpmBtn = document.getElementById('modalRpm');
+    const appImageBtn = document.getElementById('modalAppImage');
+    const macBtn = document.getElementById('modalMac');
+    if (!winBtn && !debBtn && !rpmBtn && !appImageBtn && !macBtn) return;
+
+    const applyLinks = (links) => {
+        if (winBtn) winBtn.href = links.win;
+        if (debBtn) debBtn.href = links.deb;
+        if (rpmBtn) rpmBtn.href = links.rpm;
+        if (appImageBtn) appImageBtn.href = links.appimage;
+        if (macBtn) macBtn.href = links.mac;
+
+        const versionEl = document.getElementById('versionDisplay');
+        if (versionEl && links.version) versionEl.textContent = links.version;
+    };
+
+    if (macBtn) {
+        macBtn.addEventListener('click', async (event) => {
+            const href = macBtn.getAttribute('href') || '';
+            if (!href || href.endsWith('Lux-setup.dmg') || href === '#') {
+                event.preventDefault();
+                const links = await fetchLatestReleaseLinks();
+                if (links.mac) {
+                    macBtn.href = links.mac;
+                    window.open(links.mac, macBtn.target || '_self', 'noopener');
+                }
+            }
+        });
+    }
+
+    const links = await fetchLatestReleaseLinks();
+    applyLinks(links);
 }
 
 async function checkAuth() {

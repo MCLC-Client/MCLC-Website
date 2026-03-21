@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de" class="scroll-smooth">
 
 <head>
@@ -70,6 +70,11 @@
                     <span class="font-bold text-lg">Linux (.AppImage)</span>
                     <span class="text-xs uppercase font-black opacity-50 tracking-widest">Universal</span>
                 </a>
+                <a id="modalMac" href="https://github.com/Lux-Client/Lux-Client/releases/latest/download/Lux-setup.dmg" target="_blank" rel="noopener noreferrer"
+                    class="w-full flex items-center justify-between bg-white/5 hover:bg-primary hover:text-black p-5 rounded-2xl transition-all text-left">
+                    <span class="font-bold text-lg">macOS Support</span>
+                    <span class="text-xs uppercase font-black opacity-50 tracking-widest">macOS (.dmg)</span>
+                </a>
             </div>
 
             <div class="mt-8 pt-8 border-t border-white/5 space-y-6">
@@ -113,6 +118,32 @@
 
             <button onclick="toggleModal()"
                 class="mt-8 text-gray-500 hover:text-white transition-colors w-full text-sm font-bold uppercase tracking-widest">Close</button>
+        </div>
+    </div>
+
+    <div id="macSupportModal" class="fixed inset-0 z-[210] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/85 backdrop-blur-md" onclick="closeMacSupportModal()"></div>
+        <div class="relative bg-surface border border-white/10 w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl">
+            <h3 class="text-3xl font-black text-white mb-2 uppercase tracking-tight">macOS Support</h3>
+            <p class="text-gray-400 mb-6">Lux Client has no native .dmg package right now, but macOS is supported through the install script.</p>
+
+            <div class="space-y-3 mb-6">
+                <div class="bg-black/40 border border-white/10 rounded-2xl p-4 text-sm text-gray-300">
+                    <p class="font-bold text-white mb-1">Recommended setup</p>
+                    <p>Use macOS 12+ and run the installer in Terminal.</p>
+                </div>
+                <div class="bg-black/40 border border-white/10 rounded-2xl p-4 text-sm text-gray-300">
+                    <p class="font-bold text-white mb-2">Install command</p>
+                    <code class="text-primary text-xs font-mono break-all leading-relaxed">curl -sSL https://lux.pluginhub.de/install.sh | bash</code>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <a href="https://pluginhub.de/discord.html" target="_blank"
+                    class="text-center bg-white/5 hover:bg-white/10 border border-white/10 text-white py-3 rounded-xl font-bold transition-all">Get Help</a>
+                <button type="button" onclick="closeMacSupportModal()"
+                    class="bg-primary hover:bg-primary-dark text-black py-3 rounded-xl font-black transition-all">Close</button>
+            </div>
         </div>
     </div>
 
@@ -257,7 +288,7 @@
             </div>
         </div>
     </footer>
-    <script src="/js/main.js?v=2"></script>
+    <script src="/js/main.js?v=3"></script>
     <script>
         if (typeof window.toggleModal !== 'function') {
             window.toggleModal = function () {
