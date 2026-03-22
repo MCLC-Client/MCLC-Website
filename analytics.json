@@ -143,11 +143,15 @@
       "Complementary Shaders - Reimagined": 2,
       "BSL Shaders": 1
     },
-    "modpack": {}
+    "modpack": {},
+    "extension": {
+      "Icon Picker": 1
+    }
   },
   "launchesPerDay": {
     "2026-02-15": 30,
-    "2026-02-26": 16
+    "2026-02-26": 16,
+    "2026-03-22": 1
   },
   "clientVersions": {
     "1.3.3": 780,
@@ -155,12 +159,13 @@
     "1.6.6": 28,
     "1.6.2": 5,
     "1.6.7": 49,
-    "1.6.1": 2
+    "1.6.1": 2,
+    "1.6.15": 4
   },
   "software": {
     "client": {
       "vanilla": 1,
-      "fabric": 23,
+      "fabric": 24,
       "Fabric": 13
     },
     "server": {
@@ -169,7 +174,7 @@
   },
   "gameVersions": {
     "client": {
-      "1.21.11": 34,
+      "1.21.11": 35,
       "1.21.8": 3
     },
     "server": {
