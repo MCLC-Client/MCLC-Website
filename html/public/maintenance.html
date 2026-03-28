@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Lux Client - Maintenance</title>
     <link rel="icon" type="image/png" href="/resources/lux_icon.png?v=3">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -104,7 +107,7 @@
                 </svg>
                 Join Discord
             </a>
-            <button onclick="window.location.reload()"
+            <button onclick="window.location.href='/'"
                 class="px-8 py-4 bg-primary hover:bg-primary-dark text-black rounded-2xl font-bold transition-all shadow-[0_0_20px_rgba(226, 118, 2,0.2)] hover:shadow-[0_0_30px_rgba(226, 118, 2,0.4)]">
                 Try Access Again
             </button>
@@ -136,6 +139,37 @@
     </div>
 
     <script>
+        const redirectIfMaintenanceOff = async () => {
+            try {
+                const response = await fetch('/api/admin/maintenance/status', {
+                    method: 'GET',
+                    cache: 'no-store',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+
+                if (!response.ok) return;
+
+                const data = await response.json();
+                if (data && data.isMaintenanceMode === false) {
+                    window.location.replace('/');
+                }
+            } catch (e) {
+                // Ignore transient failures and retry on next interval.
+            }
+        };
+
+        // Initial check and periodic polling so tabs recover immediately when maintenance is disabled.
+        redirectIfMaintenanceOff();
+        setInterval(redirectIfMaintenanceOff, 3000);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                redirectIfMaintenanceOff();
+            }
+        });
+
         function toggleAdminPanel() {
             const panel = document.getElementById('admin-panel');
             if (panel.classList.contains('opacity-0')) {

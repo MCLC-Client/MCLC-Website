@@ -28,15 +28,15 @@
       "Fabric API": 2,
       "FerriteCore": 1,
       "Continuity": 1,
-      "Jade 🔍": 1,
+      "Jade 🔍": 2,
       "Just Enough Items (JEI)": 1,
-      "Simple Voice Chat": 1,
+      "Simple Voice Chat": 3,
       "No Chat Reports": 1,
       "Zoomify": 1,
-      "Mouse Tweaks": 2,
+      "Mouse Tweaks": 5,
       "LambDynamicLights - Dynamic Lights": 1,
       "Chat Heads": 1,
-      "Language Reload": 1,
+      "Language Reload": 2,
       "Clumps": 1,
       "Searchables": 1,
       "BetterF3": 1,
@@ -101,7 +101,7 @@
       "Status Effect Bars": 1,
       "Jump Over Fences": 1,
       "KleeSlabs": 1,
-      "Packet Fixer": 1,
+      "Packet Fixer": 2,
       "Flashback": 1,
       "Better Selection": 1,
       "ViaFabricPlus": 1,
@@ -130,28 +130,67 @@
       "Inventory Management": 1,
       "Player Health Indicators Unofficial": 1,
       "Health Indicators": 1,
-      "Health Indicator": 1
+      "Health Indicator": 1,
+      "Optimal Aim": 1,
+      "LazyDFU Reloaded": 1,
+      "Put A Plug In it! (PAPI)": 1,
+      "Better Block Entities": 1,
+      "Full Brightness Toggle": 1,
+      "MinecraftCapes Mod": 1,
+      "Alan's Unified UI": 1,
+      "Dungeon Hotbar": 1,
+      "AxolotlClient - Customizable HUD & Client QoL Features": 1,
+      "ReGlass": 1,
+      "Sound Physics Remastered": 1,
+      "Concurrent Chunk Management Engine (Fabric)": 1,
+      "Capes": 1,
+      "Stfu": 1,
+      "Armored Elytra": 1
     },
     "resourcepack": {
-      "Fresh Animations": 2,
+      "Fresh Animations": 3,
       "Translations for Sodium": 1,
       "Motschen's Better Leaves": 1,
-      "Dramatic Skys": 2
+      "Dramatic Skys": 2,
+      "Fresh Animations: Extensions": 1,
+      "Music and Melody": 1,
+      "Recolourful Containers GUI + HUD": 1,
+      "Recolourful Containers GUI + HUD (DARK)": 1,
+      "Even Better Enchants": 1,
+      "GUI Overhaul": 1,
+      "Bare Bones x Fresh Animations": 1,
+      "Bare Bones x Eating Animation": 1,
+      "Bare Bones - Connected Glass": 1,
+      "Bare Bones - Better Leaves": 1,
+      "Bare Bones - Low On Fire": 1,
+      "Bare Bones": 1,
+      "Fullbright UB": 1
     },
     "shader": {
       "Complementary Shaders - Unbound": 2,
       "Complementary Shaders - Reimagined": 2,
-      "BSL Shaders": 1
+      "BSL Shaders": 1,
+      "Miniature Shader": 1,
+      "Mellow": 1
     },
-    "modpack": {},
+    "modpack": {
+      "Thunder": 1
+    },
     "extension": {
-      "Icon Picker": 1
+      "Icon Picker": 6,
+      "Process Monitor": 4
     }
   },
   "launchesPerDay": {
     "2026-02-15": 30,
     "2026-02-26": 16,
-    "2026-03-22": 1
+    "2026-03-22": 4,
+    "2026-03-23": 7,
+    "2026-03-24": 5,
+    "2026-03-25": 10,
+    "2026-03-26": 8,
+    "2026-03-27": 11,
+    "2026-03-28": 11
   },
   "clientVersions": {
     "1.3.3": 780,
@@ -160,25 +199,40 @@
     "1.6.2": 5,
     "1.6.7": 49,
     "1.6.1": 2,
-    "1.6.15": 4
+    "1.6.15": 113,
+    "1.6.16": 95
   },
   "software": {
     "client": {
-      "vanilla": 1,
-      "fabric": 24,
-      "Fabric": 13
+      "vanilla": 5,
+      "fabric": 55,
+      "Fabric": 33,
+      "Vanilla": 5,
+      "neoforge": 1,
+      "forge": 1,
+      "modpack": 1
     },
     "server": {
-      "vanilla": 1
+      "vanilla": 2,
+      "paper": 1
     }
   },
   "gameVersions": {
     "client": {
-      "1.21.11": 35,
-      "1.21.8": 3
+      "1.21.11": 66,
+      "1.21.8": 8,
+      "26.1-rc-3": 1,
+      "1.21.1": 1,
+      "1.20.5": 1,
+      "1.12.2": 1,
+      "1.21.10": 14,
+      "26.1": 7,
+      "1.21.9": 1,
+      "latest": 1
     },
     "server": {
-      "1.21.11": 1
+      "1.21.11": 2,
+      "26.1": 1
     }
   }
 }

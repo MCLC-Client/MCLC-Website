@@ -107,11 +107,18 @@ let isMaintenanceMode = false;
 
 // --- MAINTENANCE MIDDLEWARE ---
 app.use((req, res, next) => {
-    const isMaintenancePath = req.path === '/html/public/maintenance.html' || req.path === '/maintenance.html' || req.path === '/api/admin/maintenance/auth';
+    const isMaintenancePath = req.path === '/html/public/maintenance.html'
+        || req.path === '/maintenance.html'
+        || req.path === '/api/admin/maintenance/auth'
+        || req.path === '/api/admin/maintenance/toggle'
+        || req.path === '/api/admin/maintenance/status';
+    const isAdminPagePath = req.path === '/html/public/admin.html' || req.path === '/html/public/index.html';
+    const isAdminApiPath = req.path.startsWith('/api/admin/');
+    const isAdminBypassRoute = (isAdminPagePath || isAdminApiPath) && !!req.session?.adminBypass;
     const isResource = req.path.startsWith('/resources/') || req.path.startsWith('/css/') || req.path.startsWith('/js/') || req.path.startsWith('/uploads/');
     const isLocalExempt = req.path.startsWith('/socket.io');
 
-    if (isMaintenanceMode && !req.session?.adminBypass && !isMaintenancePath && !isResource && !isLocalExempt) {
+    if (isMaintenanceMode && !isAdminBypassRoute && !isMaintenancePath && !isResource && !isLocalExempt) {
         if (req.path.startsWith('/api/')) return res.status(503).json({ error: 'System under maintenance' });
         return res.redirect('/html/public/maintenance.html');
     }
@@ -131,9 +138,14 @@ app.post('/api/admin/maintenance/auth', (req, res) => {
 });
 
 app.post('/api/admin/maintenance/toggle', (req, res) => {
-    if (req.body.password === ADMIN_PASSWORD) {
+    const hasAdminPassword = req.body.password === ADMIN_PASSWORD;
+    const hasAdminBypass = !!req.session?.adminBypass;
+
+    if (hasAdminPassword || hasAdminBypass) {
+        if (hasAdminPassword) {
+            req.session.adminBypass = true;
+        }
         isMaintenanceMode = !isMaintenanceMode;
-        // Removed auto-bypass so the admin can test the maintenance page
         console.log(`[Maintenance] Mode is now ${isMaintenanceMode ? 'ON' : 'OFF'}`);
         return res.json({ success: true, isMaintenanceMode });
     }
@@ -153,6 +165,8 @@ let stats = {
     },
     launchesPerDay: {}, // { "2023-10-27": 150 }
     clientVersions: {}, // { "1.0.0": 10 }
+    uniqueMachineCount: 0,
+    uniqueMachines: {},
     software: {
         client: {}, // { "Fabric": 10, "Vanilla": 5 }
         server: {}
@@ -175,6 +189,10 @@ if (fs.existsSync(ANALYTICS_FILE)) {
             if (!stats.software) stats.software = { client: {}, server: {} };
             if (!stats.gameVersions) stats.gameVersions = { client: {}, server: {} };
         }
+        if (!stats.uniqueMachines || typeof stats.uniqueMachines !== 'object') stats.uniqueMachines = {};
+        stats.uniqueMachineCount = Number.isFinite(Number(stats.uniqueMachineCount))
+            ? Number(stats.uniqueMachineCount)
+            : Object.keys(stats.uniqueMachines).length;
     } catch (e) {
         console.error("Failed to load analytics:", e);
     }
@@ -202,13 +220,35 @@ io.on('connection', (socket) => {
     emitLiveStats();
 
     socket.on('register', (data) => {
+        const machineId = String(data?.machineId || '').trim();
+
+        if (machineId) {
+            for (const [existingSocketId, existingSession] of activeSessions.entries()) {
+                if (existingSocketId === socket.id) continue;
+                if (String(existingSession?.machineId || '').trim() === machineId) {
+                    activeSessions.delete(existingSocketId);
+                }
+            }
+        }
+
         const session = activeSessions.get(socket.id);
         if (session) {
             session.version = data.version || 'unknown';
             session.os = data.os || 'unknown';
             session.username = data.username || 'Anonymous';
             session.uuid = data.uuid || null;
+            session.machineId = machineId || null;
             activeSessions.set(socket.id, session);
+        }
+
+        if (machineId && !stats.uniqueMachines[machineId]) {
+            stats.uniqueMachines[machineId] = {
+                firstSeenAt: Date.now(),
+                version: data?.version || 'unknown',
+                os: data?.os || 'unknown'
+            };
+            stats.uniqueMachineCount = Object.keys(stats.uniqueMachines).length;
+            saveAnalytics();
         }
 
         if (data.version) {
@@ -307,12 +347,23 @@ function getLiveStats() {
     let playingUsers = 0;
     const versions = {};
     const playingInstances = {};
+    const activeMachineKeys = new Set();
+    const playingMachineKeys = new Set();
 
-    activeSessions.forEach((session) => {
+    activeSessions.forEach((session, socketId) => {
+        const machineKey = String(session?.machineId || '').trim() || `socket:${socketId}`;
+
         if (session.version && session.version !== 'unknown') {
-            activeUsers++;
+            if (!activeMachineKeys.has(machineKey)) {
+                activeMachineKeys.add(machineKey);
+                activeUsers++;
+            }
+
             if (session.isPlaying) {
-                playingUsers++;
+                if (!playingMachineKeys.has(machineKey)) {
+                    playingMachineKeys.add(machineKey);
+                    playingUsers++;
+                }
                 if (session.instance) {
                     playingInstances[session.instance] = (playingInstances[session.instance] || 0) + 1;
                 }
@@ -869,6 +920,8 @@ app.post('/api/admin/reset-stats', (req, res) => {
             downloads: { mod: {}, resourcepack: {}, shader: {}, modpack: {} },
             launchesPerDay: {},
             clientVersions: {},
+            uniqueMachineCount: 0,
+            uniqueMachines: {},
             software: { client: {}, server: {} },
             gameVersions: { client: {}, server: {} }
         };

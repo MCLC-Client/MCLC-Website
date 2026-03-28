@@ -136,6 +136,18 @@
                         style="color:var(--text-muted); font-size:0.8rem; letter-spacing:1px; text-transform:uppercase;">Total
                         Content Downloads</span>
                 </div>
+                <div class="stat-card">
+                    <span id="stat-new-pcs-today" class="stat-val" style="color:#22c55e">0</span>
+                    <span
+                        style="color:var(--text-muted); font-size:0.8rem; letter-spacing:1px; text-transform:uppercase;">Neue PCs
+                        heute</span>
+                </div>
+                <div class="stat-card">
+                    <span id="stat-unique-machines-total" class="stat-val" style="color:#8b5cf6">0</span>
+                    <span
+                        style="color:var(--text-muted); font-size:0.8rem; letter-spacing:1px; text-transform:uppercase;">Neue PCs
+                        gesamt</span>
+                </div>
             </div>
 
             <!-- Real-Time Activity Graph -->
@@ -421,6 +433,7 @@
                 const res = await fetch('/api/admin/maintenance/toggle', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
                     body: JSON.stringify({ password })
                 });
                 const data = await res.json();
@@ -450,7 +463,7 @@
         }
 
         // Fetch initial status
-        fetch('/api/admin/maintenance/status').then(r => r.json()).then(data => {
+        fetch('/api/admin/maintenance/status', { credentials: 'same-origin' }).then(r => r.json()).then(data => {
             updateMaintenanceButton(data.isMaintenanceMode);
         }).catch(e => console.error(e));
 
@@ -542,6 +555,7 @@
             downloads: { mod: {}, resourcepack: {}, shader: {}, modpack: {} },
             clientVersions: {},
             launchesPerDay: {},
+            uniqueMachineCount: 0,
             software: { client: {}, server: {} },
             gameVersions: { client: {}, server: {} }
         };
@@ -684,6 +698,28 @@
             charts.downloads.update();
         }
 
+        function toDateKey(value) {
+            if (value === null || value === undefined) return '';
+            const asNumber = Number(value);
+            const date = Number.isFinite(asNumber) && asNumber > 0
+                ? new Date(asNumber)
+                : new Date(value);
+            if (Number.isNaN(date.getTime())) return '';
+            return date.toISOString().split('T')[0];
+        }
+
+        function getNewPcsTodayCount(uniqueMachines) {
+            if (!uniqueMachines || typeof uniqueMachines !== 'object') return 0;
+            const today = new Date().toISOString().split('T')[0];
+            let count = 0;
+            Object.values(uniqueMachines).forEach((entry) => {
+                if (!entry || typeof entry !== 'object') return;
+                const firstSeenKey = toDateKey(entry.firstSeenAt);
+                if (firstSeenKey === today) count += 1;
+            });
+            return count;
+        }
+
         function updateCharts() {
             if (!statsData) return;
             updateDownloadsChart();
@@ -708,6 +744,20 @@
             }
             const downloadsEl = document.getElementById('stat-total-downloads');
             if (downloadsEl) downloadsEl.innerText = totalDl;
+
+            const fallbackCount = statsData.uniqueMachines && typeof statsData.uniqueMachines === 'object'
+                ? Object.keys(statsData.uniqueMachines).length
+                : 0;
+
+            const uniqueMachinesTotalEl = document.getElementById('stat-unique-machines-total');
+            if (uniqueMachinesTotalEl) {
+                uniqueMachinesTotalEl.innerText = statsData.uniqueMachineCount || fallbackCount || 0;
+            }
+
+            const newPcsTodayEl = document.getElementById('stat-new-pcs-today');
+            if (newPcsTodayEl) {
+                newPcsTodayEl.innerText = getNewPcsTodayCount(statsData.uniqueMachines);
+            }
         }
 
         function updateVersionsChart(versions) {
@@ -785,6 +835,10 @@
                 if (!statsData.software) statsData.software = { client: {}, server: {} };
                 if (!statsData.gameVersions) statsData.gameVersions = { client: {}, server: {} };
                 if (!statsData.downloads) statsData.downloads = { mod: {}, resourcepack: {}, shader: {}, modpack: {} };
+                if (!statsData.uniqueMachines || typeof statsData.uniqueMachines !== 'object') statsData.uniqueMachines = {};
+                if (typeof statsData.uniqueMachineCount !== 'number') {
+                    statsData.uniqueMachineCount = Object.keys(statsData.uniqueMachines).length;
+                }
 
                 updateCharts();
             }
