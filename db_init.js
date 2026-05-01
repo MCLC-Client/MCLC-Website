@@ -12,7 +12,7 @@ const createTables = async () => {
                 google_id VARCHAR(255) UNIQUE NOT NULL,
                 username VARCHAR(50) UNIQUE NOT NULL,
                 email VARCHAR(100),
-                avatar VARCHAR(255),
+                avatar VARCHAR(1000),
                 bio TEXT,
                 role ENUM('user', 'admin') DEFAULT 'user',
                 last_login DATETIME,
@@ -110,7 +110,7 @@ const createTables = async () => {
             }
         };
         await ensureColumn('users', 'role', "ENUM('user', 'admin') DEFAULT 'user'");
-        await ensureColumn('users', 'avatar', "VARCHAR(255) AFTER email");
+        await ensureColumn('users', 'avatar', "VARCHAR(1000) AFTER email");
         await ensureColumn('users', 'bio', "TEXT AFTER avatar");
         await ensureColumn('users', 'last_login', "DATETIME AFTER role");
         await ensureColumn('users', 'ip_address', "VARCHAR(45) AFTER last_login");

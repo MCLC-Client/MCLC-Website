@@ -35,8 +35,6 @@ passport.use(new GoogleStrategy({
     async (req, accessToken, refreshToken, profile, done) => {
         console.log(`[Google OAuth] Callback received for user: ${profile.displayName} (${profile.id})`);
         try {
-            let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            if (ip && ip.includes(',')) ip = ip.split(',')[0].trim();
             const now = new Date();
             console.log(`[Google OAuth] Querying database for google_id: ${profile.id}`);
             const [rows] = await pool.query('SELECT * FROM users WHERE google_id = ?', [profile.id]);
@@ -51,9 +49,8 @@ passport.use(new GoogleStrategy({
                         return done(null, false, { message: user.ban_reason || 'You are banned from this platform.' });
                     }
                 }
-                await pool.query('UPDATE users SET last_login = ?, ip_address = ? WHERE id = ?', [now, ip, user.id]);
+                await pool.query('UPDATE users SET last_login = ? WHERE id = ?', [now, user.id]);
                 user.last_login = now;
-                user.ip_address = ip;
 
                 return done(null, user);
             } else {
@@ -68,16 +65,15 @@ passport.use(new GoogleStrategy({
                     google_id: profile.id,
                     username: username,
                     email: profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null,
-                    avatar: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null,
+                    avatar: profile.photos && profile.photos.length > 0 ? profile.photos[0].value.substring(0, 1000) : null,
                     bio: 'Project Lux Client Member',
                     role: 'user',
-                    last_login: now,
-                    ip_address: ip
+                    last_login: now
                 };
 
                 const [result] = await pool.query(
-                    'INSERT INTO users (google_id, username, email, avatar, bio, role, last_login, ip_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                    [newUser.google_id, newUser.username, newUser.email, newUser.avatar, newUser.bio, newUser.role, newUser.last_login, newUser.ip_address]
+                    'INSERT INTO users (google_id, username, email, avatar, bio, role, last_login) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    [newUser.google_id, newUser.username, newUser.email, newUser.avatar, newUser.bio, newUser.role, newUser.last_login]
                 );
                 newUser.id = result.insertId;
                 console.log(`[Google OAuth] New user created with ID: ${newUser.id} (username: ${newUser.username})`);

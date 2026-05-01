@@ -4,8 +4,7 @@
     "description": "Simple News Admin Panel for Lux Client",
     "main": "server.js",
     "scripts": {
-        "start": "node server.js",
-        "dev": "node devserver.js"
+        "start": "node server.js"
     },
     "dependencies": {
         "body-parser": "^1.20.2",
