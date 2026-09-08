@@ -554,16 +554,28 @@ app.get('/auth/google/callback', (req, res, next) => {
             console.warn('[Google OAuth] No user returned:', info);
             return res.redirect('/login?error=no_user');
         }
+        // Read the destination BEFORE logging in. Passport regenerates the session in
+        // req.logIn() to stop session fixation, and that wipes everything we put there
+        // ourselves - reading req.session.returnTo afterwards always came back empty.
+        // That is why a first-time sign-in from the client landed on the homepage and the
+        // user had to run the whole device authorization a second time.
+        const returnTo = isSafeReturnPath(req.session.returnTo) ? req.session.returnTo : '/';
+
         req.logIn(user, (loginErr) => {
             if (loginErr) {
                 console.error('[Google OAuth] Login Error:', loginErr);
                 return res.status(500).send(`Login failed: ${loginErr.message}`);
             }
-            const returnTo = isSafeReturnPath(req.session.returnTo) ? req.session.returnTo : '/';
-            console.log(`[Auth] Redirecting after callback. returnTo was: ${req.session.returnTo}, defaulting to: ${returnTo}`);
             delete req.session.returnTo;
             console.log(`[Google OAuth] Login successful for: ${user.username}, redirecting to: ${returnTo}`);
-            res.redirect(returnTo);
+
+            // The regenerated session must reach the store before the browser follows the
+            // redirect, otherwise /authorize-device sees an anonymous request and bounces
+            // the user back into the login flow.
+            req.session.save((saveErr) => {
+                if (saveErr) console.error('[Auth] Session save error after login:', saveErr);
+                res.redirect(returnTo);
+            });
         });
     })(req, res, next);
 });
