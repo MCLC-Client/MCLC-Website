@@ -314,7 +314,8 @@ app.post('/api/codes/generate', (req, res) => {
 
 app.get('/api/extensions', (req, res) => {
     const { search } = req.query;
-    let exts = readJson('extensions.json', []).filter(e => e.status === 'approved');
+    let exts = readJson('extensions.json', [])
+        .filter(e => e.status === 'approved' && (!e.visibility || e.visibility === 'public'));
     if (search) {
         const q = search.toLowerCase();
         exts = exts.filter(e => e.name.toLowerCase().includes(q) || (e.description || '').toLowerCase().includes(q));

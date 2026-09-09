@@ -142,6 +142,7 @@ const downloadCooldowns = new Map();
 // Fixed marketplace taxonomies — single source of truth shared by upload/update validation,
 // the extensions list filter, and GET /api/meta/filters (which the frontend dropdowns read).
 const EXTENSION_CATEGORIES = ['utility', 'cosmetic', 'performance', 'ui', 'integration', 'other'];
+const EXTENSION_VISIBILITIES = ['public', 'unlisted'];
 const MC_VERSIONS = ['1.21.4', '1.21.1', '1.20.6', '1.20.4', '1.20.1', '1.19.4', '1.19.2', '1.18.2', '1.17.1', '1.16.5'];
 
 app.use(cors());
@@ -636,6 +637,7 @@ app.get('/api/extensions', async (req, res) => {
             FROM extensions
             LEFT JOIN users ON extensions.user_id = users.id
             WHERE extensions.status = "approved"
+              AND (extensions.visibility IS NULL OR extensions.visibility = 'public')
         `;
         const params = [];
 
@@ -678,6 +680,7 @@ app.post('/api/extensions/upload', ensureAuthenticated, upload.fields([
     const extensionFilename = files.extensionFile[0].filename;
     const safeCategory = EXTENSION_CATEGORIES.includes(category) ? category : null;
     const safeMcVersion = MC_VERSIONS.includes(mcVersion) ? mcVersion : null;
+    const safeVisibility = EXTENSION_VISIBILITIES.includes(visibility) ? visibility : 'public';
 
     try {
         const connection = await pool.getConnection();
@@ -686,7 +689,7 @@ app.post('/api/extensions/upload', ensureAuthenticated, upload.fields([
         try {
             const [extResult] = await connection.query(
                 'INSERT INTO extensions (user_id, name, identifier, summary, description, type, visibility, banner_path, file_path, category, mc_version) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                [req.user.id, name, identifier, summary, description, type || 'extension', visibility || 'public', bannerFilename, extensionFilename, safeCategory, safeMcVersion]
+                [req.user.id, name, identifier, summary, description, type || 'extension', safeVisibility, bannerFilename, extensionFilename, safeCategory, safeMcVersion]
             );
             const extensionId = extResult.insertId;
 
@@ -737,7 +740,13 @@ app.post('/api/extensions/update/:id', ensureAuthenticated, upload.fields([
         if (summary) { updateFields.push('summary = ?'); queryParams.push(summary); }
         if (bannerPath) { updateFields.push('banner_path = ?'); queryParams.push(bannerPath); }
         if (type) { updateFields.push('type = ?'); queryParams.push(type); }
-        if (visibility) { updateFields.push('visibility = ?'); queryParams.push(visibility); }
+        if (visibility) {
+            if (!EXTENSION_VISIBILITIES.includes(visibility)) {
+                return res.status(400).json({ error: 'Invalid visibility' });
+            }
+            updateFields.push('visibility = ?');
+            queryParams.push(visibility);
+        }
         if (category !== undefined) { updateFields.push('category = ?'); queryParams.push(EXTENSION_CATEGORIES.includes(category) ? category : null); }
         if (mcVersion !== undefined) { updateFields.push('mc_version = ?'); queryParams.push(MC_VERSIONS.includes(mcVersion) ? mcVersion : null); }
 
@@ -1229,7 +1238,10 @@ app.get('/api/users/p/:username', async (req, res) => {
         if (userRows.length === 0) return res.status(404).json({ error: 'User not found' });
 
         const user = userRows[0];
-        const [extensions] = await pool.query('SELECT name, identifier, summary, banner_path, type, status FROM extensions WHERE user_id = ? AND status = "approved"', [user.id]);
+        const [extensions] = await pool.query(
+            `SELECT name, identifier, summary, banner_path, type, status FROM extensions WHERE user_id = ? AND status = "approved" AND (visibility IS NULL OR visibility = 'public')`,
+            [user.id]
+        );
 
         if (user.is_private || extensions.length === 0) {
             return res.status(404).json({ error: 'User not found or profile is private' });
@@ -1869,8 +1881,8 @@ app.get('/extensions/:identifier', async (req, res, next) => {
         const { identifier } = req.params;
         const isNumeric = /^\d+$/.test(identifier);
         const query = isNumeric
-            ? 'SELECT name, summary, description, banner_path FROM extensions WHERE (identifier = ? OR id = ?) AND status = "approved"'
-            : 'SELECT name, summary, description, banner_path FROM extensions WHERE identifier = ? AND status = "approved"';
+            ? 'SELECT name, summary, description, banner_path, visibility FROM extensions WHERE (identifier = ? OR id = ?) AND status = "approved"'
+            : 'SELECT name, summary, description, banner_path, visibility FROM extensions WHERE identifier = ? AND status = "approved"';
         const [rows] = await pool.query(query, isNumeric ? [identifier, identifier] : [identifier]);
         if (rows.length === 0) return next();
 
@@ -1882,13 +1894,18 @@ app.get('/extensions/:identifier', async (req, res, next) => {
             : 'https://lux.pluginhub.de/resources/lux_icon.png';
         const url = `https://lux.pluginhub.de/extensions/${identifier}`;
 
+        // Unlisted projects stay reachable via direct link, but must not be indexed
+        const robotsMeta = ext.visibility === 'unlisted'
+            ? '  <meta name="robots" content="noindex, nofollow" />\n'
+            : '';
+
         const html = template
             .replace(/<title>.*?<\/title>/, `<title>${escapeHtmlAttr(title)}</title>`)
             .replace(/<meta name="description" content=".*?"\s*\/>/, `<meta name="description" content="${escapeHtmlAttr(description)}" />`)
             .replace(/<meta property="og:title" content=".*?"\s*\/>/, `<meta property="og:title" content="${escapeHtmlAttr(title)}" />`)
             .replace(/<meta property="og:description" content=".*?"\s*\/>/, `<meta property="og:description" content="${escapeHtmlAttr(description)}" />`)
             .replace(/<meta property="og:url" content=".*?"\s*\/>/, `<meta property="og:url" content="${escapeHtmlAttr(url)}" />`)
-            .replace('</head>', `  <meta property="og:image" content="${escapeHtmlAttr(image)}" />\n  <meta name="twitter:card" content="summary_large_image" />\n</head>`);
+            .replace('</head>', `  <meta property="og:image" content="${escapeHtmlAttr(image)}" />\n  <meta name="twitter:card" content="summary_large_image" />\n${robotsMeta}</head>`);
 
         res.send(html);
     } catch (err) {

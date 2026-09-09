@@ -67,7 +67,7 @@ router.post('/extensions/upload', ensureAuthenticated, upload.fields([
                 summary || null,
                 description,
                 type || 'extension',
-                visibility || 'public',
+                visibility === 'unlisted' ? 'unlisted' : 'public',
                 extensionFile.filename,
                 bannerFile ? bannerFile.filename : null,
                 'pending'
@@ -89,6 +89,7 @@ router.get('/extensions', async (req, res) => {
             FROM extensions e 
             JOIN users u ON e.user_id = u.id 
             WHERE e.status = 'approved' AND e.type = ?
+              AND (e.visibility IS NULL OR e.visibility = 'public')
         `;
         const params = [type];
 
